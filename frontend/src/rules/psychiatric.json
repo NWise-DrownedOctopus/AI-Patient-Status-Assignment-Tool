@@ -1,0 +1,51 @@
+{
+  "id": "psychiatric",
+  "label": "Psychiatric",
+  "source": "Guide for Physicians on Level of Care: Psychiatric",
+  "inputs": [
+    {
+      "id": "si",
+      "label": "Suicidal ideation",
+      "type": "toggle",
+      "required": true
+    },
+    {
+      "id": "hi",
+      "label": "Homicidal ideation",
+      "type": "toggle",
+      "required": true
+    },
+    {
+      "id": "threat_self",
+      "label": "Threat to self (such as severe anxiety, or elopement risk due to capacity issues)",
+      "type": "toggle",
+      "required": true
+    }
+  ],
+  "inpatient": {
+    "any": [
+      {
+        "field": "si",
+        "op": "is",
+        "value": true,
+        "text": "Suicidal ideation"
+      },
+      {
+        "field": "hi",
+        "op": "is",
+        "value": true,
+        "text": "Homicidal ideation"
+      },
+      {
+        "field": "threat_self",
+        "op": "is",
+        "value": true,
+        "text": "Threat to self (severe anxiety or elopement risk due to capacity issues)"
+      }
+    ]
+  },
+  "notes": [
+    "An inpatient who moves between a psychiatric unit and a medical unit stays inpatient."
+  ],
+  "observationText": "No inpatient criteria met. The guide gives no separate observation criteria for psychiatric issues, so use physician judgment."
+}

@@ -1,0 +1,49 @@
+{
+  "id": "hypertension",
+  "label": "Hypertension",
+  "source": "Guide for Physicians on Level of Care: Hypertension",
+  "inputs": [
+    {
+      "id": "hf_symptoms",
+      "label": "Documented symptoms of heart failure",
+      "type": "toggle"
+    },
+    {
+      "id": "encephalopathy",
+      "label": "Documented symptoms suggestive of hypertensive encephalopathy",
+      "type": "toggle"
+    },
+    {
+      "id": "iv_doses",
+      "label": "Doses of IV medication for systolic blood pressure control",
+      "type": "number",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "start": 0
+    }
+  ],
+  "inpatient": {
+    "any": [
+      {
+        "field": "hf_symptoms",
+        "op": "is",
+        "value": true,
+        "text": "Documented symptoms of heart failure"
+      },
+      {
+        "field": "encephalopathy",
+        "op": "is",
+        "value": true,
+        "text": "Documented symptoms suggestive of hypertensive encephalopathy"
+      },
+      {
+        "field": "iv_doses",
+        "op": ">",
+        "value": 2,
+        "text": "{value} doses of IV medication for systolic blood pressure control (more than 2)"
+      }
+    ]
+  },
+  "observationText": "No inpatient criteria met. The guide gives no separate observation criteria for hypertension, so use physician judgment."
+}

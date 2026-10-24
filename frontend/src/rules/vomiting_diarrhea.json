@@ -1,0 +1,168 @@
+{
+  "id": "vomiting_diarrhea",
+  "label": "Vomiting / diarrhea",
+  "source": "Guide for Physicians on Level of Care: Vomiting/Diarrhea (2 or more findings)",
+  "inputs": [
+    {
+      "id": "bun",
+      "label": "BUN",
+      "type": "number",
+      "unit": "mg/dL",
+      "min": 2,
+      "max": 200,
+      "step": 1,
+      "start": 15
+    },
+    {
+      "id": "creatinine",
+      "label": "Creatinine",
+      "type": "number",
+      "unit": "mg/dL",
+      "min": 0.2,
+      "max": 15,
+      "step": 0.1,
+      "start": 1
+    },
+    {
+      "id": "hr",
+      "label": "Heart rate",
+      "type": "number",
+      "unit": "bpm",
+      "min": 20,
+      "max": 250,
+      "step": 1,
+      "start": 80
+    },
+    {
+      "id": "postural_drop",
+      "label": "Postural systolic BP drop",
+      "type": "number",
+      "unit": "mmHg",
+      "min": 0,
+      "max": 120,
+      "step": 5,
+      "start": 0
+    },
+    {
+      "id": "mental_status",
+      "label": "Mental status change (disorientation or increased lethargy)",
+      "type": "toggle"
+    },
+    {
+      "id": "sodium",
+      "label": "Sodium",
+      "type": "number",
+      "unit": "mmol/L",
+      "min": 100,
+      "max": 180,
+      "step": 1,
+      "start": 140
+    },
+    {
+      "id": "antiemetic",
+      "label": "Unresponsive to more than 2 doses of antiemetic",
+      "type": "toggle"
+    },
+    {
+      "id": "usg",
+      "label": "Urine specific gravity",
+      "type": "number",
+      "min": 1.0,
+      "max": 1.06,
+      "step": 0.001,
+      "start": 1.015
+    },
+    {
+      "id": "intake",
+      "label": "Inadequate oral intake",
+      "type": "toggle"
+    },
+    {
+      "id": "vomit_x3",
+      "label": "Vomiting persisted 3 times in the ED, unresponsive to treatment",
+      "type": "toggle"
+    }
+  ],
+  "inpatient": {
+    "at_least_n": 2,
+    "of": [
+      {
+        "any": [
+          {
+            "field": "bun",
+            "op": ">",
+            "value": 45,
+            "text": "BUN {value} mg/dL is over 45"
+          },
+          {
+            "field": "creatinine",
+            "op": ">",
+            "value": 3,
+            "text": "Creatinine {value} mg/dL is over 3"
+          }
+        ]
+      },
+      {
+        "any": [
+          {
+            "field": "hr",
+            "op": ">",
+            "value": 100,
+            "text": "Heart rate {value} is over 100"
+          },
+          {
+            "field": "postural_drop",
+            "op": ">",
+            "value": 30,
+            "text": "Postural systolic BP drop of {value} mmHg (more than 30)"
+          }
+        ]
+      },
+      {
+        "any": [
+          {
+            "field": "mental_status",
+            "op": "is",
+            "value": true,
+            "text": "Mental status change"
+          },
+          {
+            "field": "sodium",
+            "op": ">",
+            "value": 150,
+            "text": "Sodium {value} mmol/L is over 150"
+          }
+        ]
+      },
+      {
+        "field": "antiemetic",
+        "op": "is",
+        "value": true,
+        "text": "Unresponsive to more than 2 doses of antiemetic"
+      },
+      {
+        "field": "usg",
+        "op": ">",
+        "value": 1.03,
+        "text": "Urine specific gravity {value} is over 1.030"
+      },
+      {
+        "field": "intake",
+        "op": "is",
+        "value": true,
+        "text": "Inadequate oral intake"
+      }
+    ]
+  },
+  "observation": {
+    "any": [
+      {
+        "field": "vomit_x3",
+        "op": "is",
+        "value": true,
+        "text": "Vomiting persisted 3 times in the ED, unresponsive to treatment"
+      }
+    ]
+  },
+  "observationText": "Fewer than 2 inpatient findings. The guide lists disorientation or lethargy, heart rate under 100, a postural BP drop under 30 and sodium under 150 as likely observation."
+}

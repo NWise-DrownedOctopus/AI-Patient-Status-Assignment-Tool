@@ -1,0 +1,124 @@
+{
+  "id": "pain",
+  "label": "Pain",
+  "source": "Guide for Physicians on Level of Care: Pain",
+  "inputs": [
+    {
+      "id": "high_risk",
+      "label": "High-risk issue of concern (probable or possible)",
+      "type": "toggle",
+      "required": true
+    },
+    {
+      "id": "unknown_abd",
+      "label": "Abdominal pain, cause unknown",
+      "type": "toggle"
+    },
+    {
+      "id": "chronic",
+      "label": "Intractable stable or chronic pain",
+      "type": "toggle"
+    },
+    {
+      "id": "migraine",
+      "label": "Intractable migraine that failed outpatient treatment, with no suspicion of a high-risk intracranial condition",
+      "type": "toggle"
+    },
+    {
+      "id": "stone",
+      "label": "Renal calculus or pyelonephritis",
+      "type": "toggle"
+    },
+    {
+      "id": "temp_f",
+      "label": "Temperature",
+      "type": "number",
+      "unit": "°F",
+      "min": 90,
+      "max": 110,
+      "step": 0.1,
+      "start": 98.6
+    },
+    {
+      "id": "sickle",
+      "label": "Suspected sickle cell crisis not needing hydration, without infection or other issue",
+      "type": "toggle"
+    }
+  ],
+  "inpatient": {
+    "any": [
+      {
+        "field": "high_risk",
+        "op": "is",
+        "value": true,
+        "text": "High-risk issue of concern (probable or possible)"
+      }
+    ]
+  },
+  "observation": {
+    "any": [
+      {
+        "field": "unknown_abd",
+        "op": "is",
+        "value": true,
+        "text": "Abdominal pain with cause unknown"
+      },
+      {
+        "field": "chronic",
+        "op": "is",
+        "value": true,
+        "text": "Intractable stable or chronic pain"
+      },
+      {
+        "field": "migraine",
+        "op": "is",
+        "value": true,
+        "text": "Intractable migraine that failed outpatient treatment, no high-risk intracranial concern"
+      },
+      {
+        "all": [
+          {
+            "field": "stone",
+            "op": "is",
+            "value": true,
+            "text": "Renal calculus or pyelonephritis"
+          },
+          {
+            "field": "temp_f",
+            "op": "<",
+            "value": 99.4,
+            "text": "Temperature {value} °F is below 99.4 °F"
+          }
+        ]
+      },
+      {
+        "field": "sickle",
+        "op": "is",
+        "value": true,
+        "text": "Suspected sickle cell crisis not needing hydration"
+      }
+    ]
+  },
+  "reviewWhen": [
+    {
+      "when": {
+        "all": [
+          {
+            "field": "stone",
+            "op": "is",
+            "value": true
+          },
+          {
+            "not": {
+              "field": "temp_f",
+              "op": "<",
+              "value": 99.4
+            }
+          }
+        ]
+      },
+      "text": "Renal calculus or pyelonephritis is an observation-level finding only without a temperature of 99.4 °F or higher. Enter the temperature, or use physician judgment if the patient is febrile."
+    }
+  ],
+  "observationText": "No high-risk issue of concern. The guide advises observation for pain without one."
+}

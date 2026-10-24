@@ -1,0 +1,39 @@
+{
+  "id": "renal",
+  "label": "Renal",
+  "source": "Guide for Physicians on Level of Care: Renal",
+  "inputs": [
+    {
+      "id": "cr_rise",
+      "label": "Creatinine rise over baseline",
+      "type": "number",
+      "unit": "mg/dL",
+      "min": 0,
+      "max": 15,
+      "step": 0.1,
+      "start": 0
+    },
+    {
+      "id": "dialysis",
+      "label": "Will receive inpatient dialysis urgently or emergently",
+      "type": "toggle"
+    }
+  ],
+  "inpatient": {
+    "any": [
+      {
+        "field": "cr_rise",
+        "op": ">",
+        "value": 0.5,
+        "text": "Acute kidney injury: creatinine {value} mg/dL over baseline (more than 0.5)"
+      },
+      {
+        "field": "dialysis",
+        "op": "is",
+        "value": true,
+        "text": "Will receive inpatient dialysis urgently or emergently"
+      }
+    ]
+  },
+  "observationText": "No inpatient criteria met. The guide gives no separate observation criteria for renal issues, so use physician judgment."
+}

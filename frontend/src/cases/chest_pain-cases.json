@@ -1,0 +1,259 @@
+[
+  {
+    "name": "Nothing answered -> Needs review naming all three questions",
+    "inputs": {},
+    "expect": {
+      "status": "review",
+      "missing": [
+        "controlled",
+        "cad_risk",
+        "stable"
+      ]
+    }
+  },
+  {
+    "name": "Pain not controlled -> Needs review",
+    "inputs": {
+      "controlled": false,
+      "cad_risk": true,
+      "stable": true
+    },
+    "expect": {
+      "status": "review",
+      "missing": []
+    }
+  },
+  {
+    "name": "No perceived coronary risk -> Needs review",
+    "inputs": {
+      "controlled": true,
+      "cad_risk": false,
+      "stable": true
+    },
+    "expect": {
+      "status": "review",
+      "missing": []
+    }
+  },
+  {
+    "name": "Controlled, stable, coronary risk, nothing else -> observation",
+    "inputs": {
+      "controlled": true,
+      "cad_risk": true,
+      "stable": true
+    },
+    "expect": {
+      "status": "observation",
+      "notMet": []
+    }
+  },
+  {
+    "name": "Hemodynamically unstable -> inpatient",
+    "inputs": {
+      "controlled": true,
+      "cad_risk": true,
+      "stable": false
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "stable"
+      ]
+    }
+  },
+  {
+    "name": "Stability not answered, nothing else -> Needs review",
+    "inputs": {
+      "controlled": true,
+      "cad_risk": true
+    },
+    "expect": {
+      "status": "review",
+      "missing": [
+        "stable"
+      ]
+    }
+  },
+  {
+    "name": "Stability not answered but STEMI/NSTEMI -> inpatient (a met criterion wins)",
+    "inputs": {
+      "controlled": true,
+      "cad_risk": true,
+      "mi": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "mi"
+      ]
+    }
+  },
+  {
+    "name": "Systolic 90 counts as not stable -> inpatient",
+    "inputs": {
+      "controlled": true,
+      "cad_risk": true,
+      "stable": true,
+      "sbp": 90
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "sbp"
+      ]
+    }
+  },
+  {
+    "name": "Systolic 91 -> observation",
+    "inputs": {
+      "controlled": true,
+      "cad_risk": true,
+      "stable": true,
+      "sbp": 91
+    },
+    "expect": {
+      "status": "observation",
+      "notMet": [
+        "sbp"
+      ]
+    }
+  },
+  {
+    "name": "STEMI or NSTEMI -> inpatient",
+    "inputs": {
+      "controlled": true,
+      "cad_risk": true,
+      "stable": true,
+      "mi": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "mi"
+      ]
+    }
+  },
+  {
+    "name": "Heart failure or arrhythmia -> inpatient",
+    "inputs": {
+      "controlled": true,
+      "cad_risk": true,
+      "stable": true,
+      "hf_arrhythmia": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "hf_arrhythmia"
+      ]
+    }
+  },
+  {
+    "name": "Syncope -> inpatient",
+    "inputs": {
+      "controlled": true,
+      "cad_risk": true,
+      "stable": true,
+      "syncope": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "syncope"
+      ]
+    }
+  },
+  {
+    "name": "Positive troponin alone -> observation",
+    "inputs": {
+      "controlled": true,
+      "cad_risk": true,
+      "stable": true,
+      "troponin": true
+    },
+    "expect": {
+      "status": "observation"
+    }
+  },
+  {
+    "name": "Positive troponin and paced rhythm -> inpatient",
+    "inputs": {
+      "controlled": true,
+      "cad_risk": true,
+      "stable": true,
+      "troponin": true,
+      "paced": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "troponin",
+        "paced"
+      ]
+    }
+  },
+  {
+    "name": "Positive troponin and ischemia on stress test -> inpatient",
+    "inputs": {
+      "controlled": true,
+      "cad_risk": true,
+      "stable": true,
+      "troponin": true,
+      "ischemia": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "troponin",
+        "ischemia"
+      ]
+    }
+  },
+  {
+    "name": "Ischemia or paced rhythm without troponin -> observation",
+    "inputs": {
+      "controlled": true,
+      "cad_risk": true,
+      "stable": true,
+      "ischemia": true,
+      "paced": true
+    },
+    "expect": {
+      "status": "observation"
+    }
+  },
+  {
+    "name": "Medicare, unstable, 2+ midnights -> inpatient",
+    "payer": "medicare",
+    "medicare": {
+      "midnights": true
+    },
+    "inputs": {
+      "controlled": true,
+      "cad_risk": true,
+      "stable": false
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "stable"
+      ]
+    }
+  },
+  {
+    "name": "Medicare, unstable, midnights not answered -> Needs review",
+    "payer": "medicare",
+    "medicare": {},
+    "inputs": {
+      "controlled": true,
+      "cad_risk": true,
+      "stable": false
+    },
+    "expect": {
+      "status": "review",
+      "missing": [
+        "midnights"
+      ]
+    }
+  }
+]

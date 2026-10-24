@@ -1,0 +1,121 @@
+[
+  {
+    "name": "Nothing entered -> Needs review",
+    "inputs": {},
+    "expect": {
+      "status": "review",
+      "reasonIncludes": "Enter the patient"
+    }
+  },
+  {
+    "name": "Therapeutic drug level with known seizure history -> inpatient",
+    "inputs": {
+      "therapeutic_level": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "therapeutic_level"
+      ]
+    }
+  },
+  {
+    "name": "Change in seizure pattern -> inpatient",
+    "inputs": {
+      "pattern_change": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "pattern_change"
+      ]
+    }
+  },
+  {
+    "name": "Multiple episodes over 24 hours -> inpatient",
+    "inputs": {
+      "multiple": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "multiple"
+      ]
+    }
+  },
+  {
+    "name": "Surgical mapping -> inpatient",
+    "inputs": {
+      "mapping": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "mapping"
+      ]
+    }
+  },
+  {
+    "name": "Sodium 119 -> inpatient",
+    "inputs": {
+      "sodium": 119
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "sodium"
+      ]
+    }
+  },
+  {
+    "name": "Sodium 120 (not below 120) -> observation",
+    "inputs": {
+      "sodium": 120
+    },
+    "expect": {
+      "status": "observation",
+      "notMet": [
+        "sodium"
+      ]
+    }
+  },
+  {
+    "name": "Prolonged postictal state only -> observation",
+    "inputs": {
+      "postictal": true
+    },
+    "expect": {
+      "status": "observation",
+      "supports": [
+        "postictal"
+      ]
+    }
+  },
+  {
+    "name": "Prolonged postictal state with multiple episodes -> inpatient",
+    "inputs": {
+      "postictal": true,
+      "multiple": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "multiple"
+      ]
+    }
+  },
+  {
+    "name": "Medicare, sodium 115, midnights not answered -> Needs review",
+    "payer": "medicare",
+    "medicare": {},
+    "inputs": {
+      "sodium": 115
+    },
+    "expect": {
+      "status": "review",
+      "missing": [
+        "midnights"
+      ]
+    }
+  }
+]

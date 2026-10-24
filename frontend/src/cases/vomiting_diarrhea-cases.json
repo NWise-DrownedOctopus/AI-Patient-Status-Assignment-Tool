@@ -1,0 +1,190 @@
+[
+  {
+    "name": "Nothing entered -> Needs review",
+    "inputs": {},
+    "expect": {
+      "status": "review",
+      "reasonIncludes": "Enter the patient"
+    }
+  },
+  {
+    "name": "One finding (BUN 50) is not enough -> observation",
+    "inputs": {
+      "bun": 50
+    },
+    "expect": {
+      "status": "observation",
+      "notMet": []
+    }
+  },
+  {
+    "name": "BUN and creatinine both high still count as one finding -> observation",
+    "inputs": {
+      "bun": 50,
+      "creatinine": 4
+    },
+    "expect": {
+      "status": "observation"
+    }
+  },
+  {
+    "name": "BUN 50 and heart rate 110 -> inpatient",
+    "inputs": {
+      "bun": 50,
+      "hr": 110
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "bun",
+        "hr"
+      ]
+    }
+  },
+  {
+    "name": "Heart rate 101 and inadequate oral intake -> inpatient",
+    "inputs": {
+      "hr": 101,
+      "intake": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "hr",
+        "intake"
+      ]
+    }
+  },
+  {
+    "name": "Heart rate 100 (not over 100) and inadequate intake -> observation",
+    "inputs": {
+      "hr": 100,
+      "intake": true
+    },
+    "expect": {
+      "status": "observation",
+      "notMet": [
+        "hr"
+      ]
+    }
+  },
+  {
+    "name": "Urine specific gravity 1.031 and antiemetic failure -> inpatient",
+    "inputs": {
+      "usg": 1.031,
+      "antiemetic": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "usg",
+        "antiemetic"
+      ]
+    }
+  },
+  {
+    "name": "Urine specific gravity 1.030 (not over) and antiemetic failure -> observation",
+    "inputs": {
+      "usg": 1.03,
+      "antiemetic": true
+    },
+    "expect": {
+      "status": "observation",
+      "notMet": [
+        "usg"
+      ]
+    }
+  },
+  {
+    "name": "Sodium 151 and mental status change count as one finding -> observation",
+    "inputs": {
+      "sodium": 151,
+      "mental_status": true
+    },
+    "expect": {
+      "status": "observation"
+    }
+  },
+  {
+    "name": "Sodium 151 and postural BP drop 35 -> inpatient",
+    "inputs": {
+      "sodium": 151,
+      "postural_drop": 35
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "sodium",
+        "postural_drop"
+      ]
+    }
+  },
+  {
+    "name": "Sodium 150 (not over 150) and mental status change -> observation",
+    "inputs": {
+      "sodium": 150,
+      "mental_status": true
+    },
+    "expect": {
+      "status": "observation",
+      "notMet": [
+        "sodium"
+      ]
+    }
+  },
+  {
+    "name": "Antiemetic failure and mental status change -> inpatient",
+    "inputs": {
+      "antiemetic": true,
+      "mental_status": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "antiemetic",
+        "mental_status"
+      ]
+    }
+  },
+  {
+    "name": "BUN 45 and creatinine 3 are not over their limits -> observation",
+    "inputs": {
+      "bun": 45,
+      "creatinine": 3
+    },
+    "expect": {
+      "status": "observation",
+      "notMet": [
+        "bun",
+        "creatinine"
+      ]
+    }
+  },
+  {
+    "name": "Vomiting 3 times in the ED -> observation",
+    "inputs": {
+      "vomit_x3": true
+    },
+    "expect": {
+      "status": "observation",
+      "supports": [
+        "vomit_x3"
+      ]
+    }
+  },
+  {
+    "name": "Medicare, two findings, midnights not answered -> Needs review",
+    "payer": "medicare",
+    "medicare": {},
+    "inputs": {
+      "antiemetic": true,
+      "intake": true
+    },
+    "expect": {
+      "status": "review",
+      "missing": [
+        "midnights"
+      ]
+    }
+  }
+]

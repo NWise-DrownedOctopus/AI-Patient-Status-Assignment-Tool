@@ -1,0 +1,228 @@
+{
+  "id": "heart_failure",
+  "label": "Heart failure",
+  "source": "Guide for Physicians on Level of Care: Heart Failure (with the dyspnea criteria)",
+  "medicare": {
+    "exclusions": {
+      "ventilation": "ventilation"
+    }
+  },
+  "inputs": [
+    {
+      "id": "stable",
+      "label": "Hemodynamically stable",
+      "type": "toggle",
+      "required": true
+    },
+    {
+      "id": "o2sat",
+      "label": "O2 saturation",
+      "type": "number",
+      "required": true,
+      "unit": "%",
+      "min": 50,
+      "max": 100,
+      "step": 1,
+      "start": 95
+    },
+    {
+      "id": "pao2",
+      "label": "Arterial PO2",
+      "type": "number",
+      "unit": "mmHg",
+      "min": 20,
+      "max": 600,
+      "step": 1,
+      "start": 80
+    },
+    {
+      "id": "paco2",
+      "label": "Arterial PCO2",
+      "type": "number",
+      "unit": "mmHg",
+      "min": 10,
+      "max": 200,
+      "step": 1,
+      "start": 40
+    },
+    {
+      "id": "ph",
+      "label": "Arterial pH",
+      "type": "number",
+      "min": 6.8,
+      "max": 7.8,
+      "step": 0.01,
+      "start": 7.4
+    },
+    {
+      "id": "ventilation",
+      "label": "Ventilation required (intubation or BiPAP)",
+      "type": "toggle"
+    },
+    {
+      "id": "deteriorating",
+      "label": "Continued deterioration despite more than 24 hours of outpatient therapy",
+      "type": "toggle"
+    },
+    {
+      "id": "unresponsive",
+      "label": "Unresponsive to more than 2 days of outpatient steroid or diuresis",
+      "type": "toggle"
+    },
+    {
+      "id": "decompression",
+      "label": "Decompression sickness",
+      "type": "toggle"
+    },
+    {
+      "id": "stridor",
+      "label": "Stridor",
+      "type": "toggle"
+    },
+    {
+      "id": "hemoptysis_ml",
+      "label": "Hemoptysis volume",
+      "type": "number",
+      "unit": "mL",
+      "min": 0,
+      "max": 2000,
+      "step": 10,
+      "start": 0
+    },
+    {
+      "id": "copd",
+      "label": "COPD exacerbation",
+      "type": "toggle"
+    },
+    {
+      "id": "iv_antiinfective",
+      "label": "On IV anti-infection therapy",
+      "type": "toggle"
+    },
+    {
+      "id": "iv_diuretic",
+      "label": "Doses of IV diuretic required",
+      "type": "number",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "start": 0
+    }
+  ],
+  "prerequisites": [
+    {
+      "field": "stable",
+      "op": "is",
+      "value": true,
+      "text": "Patient is hemodynamically stable",
+      "failText": "Patient is not hemodynamically stable. The heart failure criteria build on the dyspnea criteria, which assume a stable patient, so use clinical judgment."
+    }
+  ],
+  "inpatient": {
+    "any": [
+      {
+        "field": "o2sat",
+        "op": "<",
+        "value": 90,
+        "text": "O2 saturation {value}% is below 90%"
+      },
+      {
+        "field": "pao2",
+        "op": "<",
+        "value": 57,
+        "text": "Arterial PO2 {value} mmHg is below 57"
+      },
+      {
+        "field": "ventilation",
+        "op": "is",
+        "value": true,
+        "text": "Ventilation required (intubation or BiPAP)"
+      },
+      {
+        "field": "deteriorating",
+        "op": "is",
+        "value": true,
+        "text": "Continued deterioration despite more than 24 hours of outpatient therapy"
+      },
+      {
+        "field": "unresponsive",
+        "op": "is",
+        "value": true,
+        "text": "Unresponsive to more than 2 days of outpatient steroid or diuresis"
+      },
+      {
+        "field": "decompression",
+        "op": "is",
+        "value": true,
+        "text": "Decompression sickness"
+      },
+      {
+        "field": "stridor",
+        "op": "is",
+        "value": true,
+        "text": "Stridor"
+      },
+      {
+        "field": "hemoptysis_ml",
+        "op": ">",
+        "value": 50,
+        "text": "Hemoptysis of {value} mL (more than 50 mL)"
+      },
+      {
+        "all": [
+          {
+            "field": "paco2",
+            "op": "between",
+            "value": [
+              45,
+              54
+            ],
+            "text": "Arterial PCO2 {value} mmHg is within 45-54"
+          },
+          {
+            "field": "ph",
+            "op": "between",
+            "value": [
+              7.31,
+              7.35
+            ],
+            "text": "Arterial pH {value} is within 7.31-7.35"
+          }
+        ]
+      },
+      {
+        "all": [
+          {
+            "field": "copd",
+            "op": "is",
+            "value": true,
+            "text": "COPD exacerbation"
+          },
+          {
+            "any": [
+              {
+                "field": "o2sat",
+                "op": "<",
+                "value": 90,
+                "text": "O2 saturation {value}% is below 90%"
+              },
+              {
+                "field": "iv_antiinfective",
+                "op": "is",
+                "value": true,
+                "text": "On IV anti-infection therapy"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "field": "iv_diuretic",
+        "op": ">=",
+        "value": 2,
+        "text": "{value} doses of IV diuretic required (2 or more)"
+      }
+    ]
+  },
+  "observationText": "No inpatient criteria met. The guide lists O2 saturation over 89% and arterial PO2 of 57 or greater as observation-level findings; fewer than 2 IV diuretic doses does not meet the diuretic criterion."
+}

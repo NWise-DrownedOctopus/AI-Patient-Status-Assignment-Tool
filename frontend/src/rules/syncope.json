@@ -1,0 +1,54 @@
+{
+  "id": "syncope",
+  "label": "Syncope / presyncope",
+  "source": "Guide for Physicians on Level of Care: Syncope or presyncope",
+  "inputs": [
+    {
+      "id": "cv_drug",
+      "label": "Cardiovascular drug induced or suspected, and the concern is documented",
+      "type": "toggle",
+      "required": true
+    },
+    {
+      "id": "cardiac_disease",
+      "label": "Known cardiac disease",
+      "type": "toggle",
+      "required": true
+    },
+    {
+      "id": "non_cardiac",
+      "label": "Not believed to be cardiovascular (unknown etiology)",
+      "type": "toggle"
+    }
+  ],
+  "inpatient": {
+    "any": [
+      {
+        "field": "cv_drug",
+        "op": "is",
+        "value": true,
+        "text": "Cardiovascular drug induced or suspected, and the concern is documented"
+      },
+      {
+        "field": "cardiac_disease",
+        "op": "is",
+        "value": true,
+        "text": "Known cardiac disease"
+      }
+    ]
+  },
+  "observation": {
+    "any": [
+      {
+        "field": "non_cardiac",
+        "op": "is",
+        "value": true,
+        "text": "Not believed to be cardiovascular (unknown etiology)"
+      }
+    ]
+  },
+  "notes": [
+    "Consider the ABCD score and possible TIA."
+  ],
+  "observationText": "No inpatient criteria met. The guide lists syncope or presyncope without these findings as likely observation."
+}

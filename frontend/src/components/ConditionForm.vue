@@ -43,7 +43,9 @@ const otherFields = computed(() => props.rule.inputs.filter((f) => !f.required))
     </template>
 
     <!-- Everything else: leave blank or off when it does not apply. -->
-    <h3 v-if="otherFields.length" class="subhead">Other findings (leave off if not present)</h3>
+    <h3 v-if="otherFields.length" class="subhead" :class="{ first: !requiredFields.length }">
+      {{ requiredFields.length ? 'Other findings (leave off if not present)' : 'Leave off anything that is not present' }}
+    </h3>
     <template v-for="field in otherFields" :key="field.id">
       <label v-if="field.type === 'toggle'" class="switch-row">
         <span>{{ field.label }}</span>

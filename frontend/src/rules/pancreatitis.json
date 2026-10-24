@@ -1,0 +1,96 @@
+{
+  "id": "pancreatitis",
+  "label": "Pancreatitis",
+  "source": "Guide for Physicians on Level of Care: Pancreatitis (acute and chronic)",
+  "inputs": [
+    {
+      "id": "acute",
+      "label": "Acute pancreatitis (answer No for chronic)",
+      "type": "toggle",
+      "required": true
+    },
+    {
+      "id": "abd_pain",
+      "label": "Abdominal pain",
+      "type": "toggle"
+    },
+    {
+      "id": "enzyme_x",
+      "label": "Amylase or lipase (times upper limit of normal)",
+      "type": "number",
+      "unit": "x ULN",
+      "min": 0,
+      "max": 50,
+      "step": 0.5,
+      "start": 1
+    },
+    {
+      "id": "imaging",
+      "label": "Pancreatitis on imaging",
+      "type": "toggle"
+    },
+    {
+      "id": "iv_analgesic",
+      "label": "Doses of IV push analgesic that did not control pain",
+      "type": "number",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "start": 0
+    }
+  ],
+  "inpatient": {
+    "any": [
+      {
+        "all": [
+          {
+            "field": "acute",
+            "op": "is",
+            "value": true,
+            "text": "Acute pancreatitis"
+          },
+          {
+            "at_least_n": 2,
+            "of": [
+              {
+                "field": "abd_pain",
+                "op": "is",
+                "value": true,
+                "text": "Abdominal pain"
+              },
+              {
+                "field": "enzyme_x",
+                "op": ">=",
+                "value": 3,
+                "text": "Amylase or lipase {value} x ULN (3 times the upper limit of normal or more)"
+              },
+              {
+                "field": "imaging",
+                "op": "is",
+                "value": true,
+                "text": "Pancreatitis on imaging"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "all": [
+          {
+            "field": "acute",
+            "op": "is",
+            "value": false,
+            "text": "Chronic pancreatitis"
+          },
+          {
+            "field": "iv_analgesic",
+            "op": ">=",
+            "value": 3,
+            "text": "Pain unresponsive to {value} doses of IV push analgesic (3 or more)"
+          }
+        ]
+      }
+    ]
+  },
+  "observationText": "No inpatient criteria met. Acute pancreatitis needs 2 or more of abdominal pain, amylase or lipase at 3 times normal, and imaging findings; chronic pancreatitis needs pain unresponsive to 3 or more IV push analgesic doses."
+}

@@ -1,0 +1,161 @@
+[
+  {
+    "name": "Nothing entered -> Needs review",
+    "inputs": {},
+    "expect": {
+      "status": "review",
+      "reasonIncludes": "Enter the patient"
+    }
+  },
+  {
+    "name": "Acute mental status change -> inpatient (with the neuro-checks reminder)",
+    "inputs": {
+      "mental_status": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "mental_status"
+      ],
+      "notesInclude": "Neuro checks"
+    }
+  },
+  {
+    "name": "Aphasia or dysarthria -> inpatient",
+    "inputs": {
+      "aphasia": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "aphasia"
+      ]
+    }
+  },
+  {
+    "name": "Blindness or visual field loss -> inpatient",
+    "inputs": {
+      "vision": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "vision"
+      ]
+    }
+  },
+  {
+    "name": "Dysphagia -> inpatient",
+    "inputs": {
+      "dysphagia": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "dysphagia"
+      ]
+    }
+  },
+  {
+    "name": "Paresis or paralysis of an extremity -> inpatient",
+    "inputs": {
+      "paresis": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "paresis"
+      ]
+    }
+  },
+  {
+    "name": "Unconsciousness -> inpatient",
+    "inputs": {
+      "unconscious": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "unconscious"
+      ]
+    }
+  },
+  {
+    "name": "Stroke or subacute stroke -> inpatient",
+    "inputs": {
+      "stroke": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "stroke"
+      ]
+    }
+  },
+  {
+    "name": "TIA to be worked up this hospitalization -> inpatient",
+    "inputs": {
+      "tia": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "tia"
+      ]
+    }
+  },
+  {
+    "name": "Exacerbation of an existing deficit -> observation (with the reminder)",
+    "inputs": {
+      "exacerbation": true
+    },
+    "expect": {
+      "status": "observation",
+      "supports": [
+        "exacerbation"
+      ],
+      "notesInclude": "Neuro checks"
+    }
+  },
+  {
+    "name": "Muscle weakness only -> observation",
+    "inputs": {
+      "weakness": true
+    },
+    "expect": {
+      "status": "observation",
+      "supports": [
+        "weakness"
+      ]
+    }
+  },
+  {
+    "name": "Muscle weakness plus paresis of an extremity -> inpatient",
+    "inputs": {
+      "weakness": true,
+      "paresis": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "paresis"
+      ]
+    }
+  },
+  {
+    "name": "Medicare, stroke, 2+ midnights -> inpatient",
+    "payer": "medicare",
+    "medicare": {
+      "midnights": true
+    },
+    "inputs": {
+      "stroke": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "stroke"
+      ]
+    }
+  }
+]

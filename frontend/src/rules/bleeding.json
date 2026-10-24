@@ -1,0 +1,240 @@
+{
+  "id": "bleeding",
+  "label": "Bleeding / anemia",
+  "source": "Guide for Physicians on Level of Care: Bleeding (including GI bleeding) or anemia",
+  "inputs": [
+    {
+      "id": "disorientation",
+      "label": "Disorientation or increasing lethargy",
+      "type": "toggle"
+    },
+    {
+      "id": "hct",
+      "label": "Hematocrit",
+      "type": "number",
+      "unit": "%",
+      "min": 5,
+      "max": 60,
+      "step": 1,
+      "start": 36
+    },
+    {
+      "id": "hgb",
+      "label": "Hemoglobin",
+      "type": "number",
+      "unit": "g/dL",
+      "min": 2,
+      "max": 20,
+      "step": 0.1,
+      "start": 12
+    },
+    {
+      "id": "hr",
+      "label": "Heart rate",
+      "type": "number",
+      "unit": "bpm",
+      "min": 20,
+      "max": 250,
+      "step": 1,
+      "start": 80
+    },
+    {
+      "id": "platelets",
+      "label": "Platelet count",
+      "type": "number",
+      "unit": "K/µL",
+      "min": 0,
+      "max": 1000,
+      "step": 5,
+      "start": 250
+    },
+    {
+      "id": "postural_drop",
+      "label": "Postural systolic BP drop",
+      "type": "number",
+      "unit": "mmHg",
+      "min": 0,
+      "max": 120,
+      "step": 5,
+      "start": 0
+    },
+    {
+      "id": "syncope",
+      "label": "Syncope",
+      "type": "toggle"
+    },
+    {
+      "id": "pt",
+      "label": "PT (multiple of upper limit of normal)",
+      "type": "number",
+      "unit": "x ULN",
+      "min": 0.5,
+      "max": 10,
+      "step": 0.1,
+      "start": 1
+    },
+    {
+      "id": "ptt",
+      "label": "PTT (multiple of upper limit of normal)",
+      "type": "number",
+      "unit": "x ULN",
+      "min": 0.5,
+      "max": 10,
+      "step": 0.1,
+      "start": 1
+    },
+    {
+      "id": "transfusion",
+      "label": "Transfusion given",
+      "type": "toggle"
+    },
+    {
+      "id": "bleeding_disorder",
+      "label": "Bleeding disorder known or suspected",
+      "type": "toggle"
+    },
+    {
+      "id": "epistaxis",
+      "label": "Epistaxis requiring packing",
+      "type": "toggle"
+    },
+    {
+      "id": "persistent",
+      "label": "Persistent bleeding for more than 24 hours",
+      "type": "toggle"
+    },
+    {
+      "id": "asymptomatic_unknown",
+      "label": "Low hematocrit or hemoglobin, asymptomatic, cause unknown",
+      "type": "toggle"
+    }
+  ],
+  "inpatient": {
+    "any": [
+      {
+        "field": "disorientation",
+        "op": "is",
+        "value": true,
+        "text": "Disorientation or increasing lethargy"
+      },
+      {
+        "all": [
+          {
+            "any": [
+              {
+                "field": "hct",
+                "op": "<",
+                "value": 25,
+                "text": "Hematocrit {value}% is below 25%"
+              },
+              {
+                "field": "hgb",
+                "op": "<",
+                "value": 8.3,
+                "text": "Hemoglobin {value} g/dL is below 8.3"
+              }
+            ]
+          },
+          {
+            "not": {
+              "field": "asymptomatic_unknown",
+              "op": "is",
+              "value": true
+            }
+          }
+        ]
+      },
+      {
+        "field": "hr",
+        "op": ">",
+        "value": 100,
+        "text": "Heart rate {value} is over 100"
+      },
+      {
+        "field": "platelets",
+        "op": "<",
+        "value": 60,
+        "text": "Platelet count {value} K/µL is below 60,000"
+      },
+      {
+        "field": "postural_drop",
+        "op": ">",
+        "value": 30,
+        "text": "Postural systolic BP drop of {value} mmHg (more than 30)"
+      },
+      {
+        "field": "syncope",
+        "op": "is",
+        "value": true,
+        "text": "Syncope"
+      },
+      {
+        "field": "pt",
+        "op": ">",
+        "value": 1.5,
+        "text": "PT {value} x ULN is more than 1.5 x the upper limit of normal"
+      },
+      {
+        "field": "ptt",
+        "op": ">",
+        "value": 1.5,
+        "text": "PTT {value} x ULN is more than 1.5 x the upper limit of normal"
+      },
+      {
+        "field": "transfusion",
+        "op": "is",
+        "value": true,
+        "text": "Transfusion given"
+      }
+    ]
+  },
+  "observation": {
+    "any": [
+      {
+        "field": "bleeding_disorder",
+        "op": "is",
+        "value": true,
+        "text": "Bleeding disorder known or suspected"
+      },
+      {
+        "field": "epistaxis",
+        "op": "is",
+        "value": true,
+        "text": "Epistaxis requiring packing"
+      },
+      {
+        "field": "persistent",
+        "op": "is",
+        "value": true,
+        "text": "Persistent bleeding for more than 24 hours"
+      },
+      {
+        "all": [
+          {
+            "any": [
+              {
+                "field": "hct",
+                "op": "<",
+                "value": 25,
+                "text": "Hematocrit {value}% is below 25%"
+              },
+              {
+                "field": "hgb",
+                "op": "<",
+                "value": 8.3,
+                "text": "Hemoglobin {value} g/dL is below 8.3"
+              }
+            ]
+          },
+          {
+            "field": "asymptomatic_unknown",
+            "op": "is",
+            "value": true,
+            "text": "Asymptomatic with unknown cause"
+          }
+        ]
+      }
+    ]
+  },
+  "observationText": "No inpatient criteria met. The guide considers bleeding or anemia without these findings likely appropriate for observation."
+}

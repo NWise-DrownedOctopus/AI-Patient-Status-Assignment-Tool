@@ -1,0 +1,107 @@
+{
+  "id": "abdominal_pain",
+  "label": "Abdominal pain",
+  "source": "Guide for Physicians on Level of Care: Abdominal Pain",
+  "inputs": [
+    {
+      "id": "diverticulitis",
+      "label": "Diverticulitis on imaging",
+      "type": "toggle"
+    },
+    {
+      "id": "mental_status",
+      "label": "Mental status change",
+      "type": "toggle"
+    },
+    {
+      "id": "temp_f",
+      "label": "Temperature (rectal, or equivalent)",
+      "type": "number",
+      "unit": "°F",
+      "min": 90,
+      "max": 110,
+      "step": 0.1,
+      "start": 98.6
+    },
+    {
+      "id": "wbc",
+      "label": "White blood cell count",
+      "type": "number",
+      "unit": "K/µL",
+      "min": 0,
+      "max": 100,
+      "step": 0.5,
+      "start": 8
+    },
+    {
+      "id": "vomiting",
+      "label": "Protracted vomiting",
+      "type": "toggle"
+    },
+    {
+      "id": "obstruction",
+      "label": "Bowel obstruction",
+      "type": "toggle"
+    },
+    {
+      "id": "unknown_cause",
+      "label": "Abdominal pain, cause unknown",
+      "type": "toggle"
+    }
+  ],
+  "inpatient": {
+    "any": [
+      {
+        "field": "diverticulitis",
+        "op": "is",
+        "value": true,
+        "text": "Diverticulitis on imaging"
+      },
+      {
+        "field": "mental_status",
+        "op": "is",
+        "value": true,
+        "text": "Mental status change"
+      },
+      {
+        "all": [
+          {
+            "field": "temp_f",
+            "op": ">",
+            "value": 100.4,
+            "text": "Temperature {value} °F is over 100.4 °F"
+          },
+          {
+            "field": "wbc",
+            "op": ">",
+            "value": 15,
+            "text": "WBC {value} K/µL is over 15 (15,000)"
+          }
+        ]
+      },
+      {
+        "field": "vomiting",
+        "op": "is",
+        "value": true,
+        "text": "Protracted vomiting"
+      },
+      {
+        "field": "obstruction",
+        "op": "is",
+        "value": true,
+        "text": "Bowel obstruction"
+      }
+    ]
+  },
+  "observation": {
+    "any": [
+      {
+        "field": "unknown_cause",
+        "op": "is",
+        "value": true,
+        "text": "Abdominal pain with cause unknown"
+      }
+    ]
+  },
+  "observationText": "No inpatient criteria met. The guide lists abdominal pain with an unknown cause as likely observation."
+}

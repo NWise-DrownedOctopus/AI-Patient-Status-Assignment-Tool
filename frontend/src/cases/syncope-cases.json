@@ -1,0 +1,91 @@
+[
+  {
+    "name": "Nothing answered -> Needs review naming both questions",
+    "inputs": {},
+    "expect": {
+      "status": "review",
+      "missing": [
+        "cv_drug",
+        "cardiac_disease"
+      ]
+    }
+  },
+  {
+    "name": "Known cardiac disease -> inpatient even with the drug question unanswered",
+    "inputs": {
+      "cardiac_disease": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "cardiac_disease"
+      ],
+      "notesInclude": "ABCD"
+    }
+  },
+  {
+    "name": "Cardiovascular drug suspected, concern documented -> inpatient",
+    "inputs": {
+      "cv_drug": true,
+      "cardiac_disease": false
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "cv_drug"
+      ]
+    }
+  },
+  {
+    "name": "Both answered No -> observation (with the ABCD reminder)",
+    "inputs": {
+      "cv_drug": false,
+      "cardiac_disease": false
+    },
+    "expect": {
+      "status": "observation",
+      "supports": [],
+      "notesInclude": "ABCD"
+    }
+  },
+  {
+    "name": "Both No and not believed cardiovascular -> observation",
+    "inputs": {
+      "cv_drug": false,
+      "cardiac_disease": false,
+      "non_cardiac": true
+    },
+    "expect": {
+      "status": "observation",
+      "supports": [
+        "non_cardiac"
+      ]
+    }
+  },
+  {
+    "name": "Drug question No, cardiac disease unanswered -> Needs review",
+    "inputs": {
+      "cv_drug": false
+    },
+    "expect": {
+      "status": "review",
+      "missing": [
+        "cardiac_disease"
+      ]
+    }
+  },
+  {
+    "name": "Medicare, cardiac disease, midnights not answered -> Needs review",
+    "payer": "medicare",
+    "medicare": {},
+    "inputs": {
+      "cardiac_disease": true
+    },
+    "expect": {
+      "status": "review",
+      "missing": [
+        "midnights"
+      ]
+    }
+  }
+]

@@ -1,0 +1,131 @@
+{
+  "id": "pneumonia",
+  "label": "Pneumonia",
+  "source": "Guide for Physicians on Level of Care: Pneumonia",
+  "medicare": {
+    "exclusions": {
+      "ventilation": "ventilation"
+    }
+  },
+  "inputs": [
+    {
+      "id": "age",
+      "label": "Age",
+      "type": "number",
+      "required": true,
+      "unit": "years",
+      "min": 0,
+      "max": 120,
+      "step": 1,
+      "start": 60
+    },
+    {
+      "id": "o2sat",
+      "label": "O2 saturation",
+      "type": "number",
+      "required": true,
+      "unit": "%",
+      "min": 50,
+      "max": 100,
+      "step": 1,
+      "start": 95
+    },
+    {
+      "id": "pao2",
+      "label": "Arterial PO2",
+      "type": "number",
+      "unit": "mmHg",
+      "min": 20,
+      "max": 600,
+      "step": 1,
+      "start": 80
+    },
+    {
+      "id": "hr",
+      "label": "Heart rate",
+      "type": "number",
+      "unit": "bpm",
+      "min": 20,
+      "max": 250,
+      "step": 1,
+      "start": 80
+    },
+    {
+      "id": "lobes",
+      "label": "Lobes of lung involved",
+      "type": "number",
+      "min": 0,
+      "max": 5,
+      "step": 1,
+      "start": 1
+    },
+    {
+      "id": "comorbid",
+      "label": "A prior comorbid condition that increases risk can be articulated",
+      "type": "toggle"
+    },
+    {
+      "id": "ventilation",
+      "label": "Ventilation required (intubation or BiPAP)",
+      "type": "toggle"
+    },
+    {
+      "id": "failed_op",
+      "label": "Failed outpatient treatment",
+      "type": "toggle"
+    }
+  ],
+  "inpatient": {
+    "any": [
+      {
+        "field": "lobes",
+        "op": ">=",
+        "value": 2,
+        "text": "{value} lobes of the lung involved (2 or more)"
+      },
+      {
+        "field": "age",
+        "op": ">=",
+        "value": 65,
+        "text": "Age {value} years (65 or older)"
+      },
+      {
+        "field": "hr",
+        "op": ">",
+        "value": 120,
+        "text": "Heart rate {value} is over 120"
+      },
+      {
+        "field": "o2sat",
+        "op": "<",
+        "value": 90,
+        "text": "O2 saturation {value}% is below 90%"
+      },
+      {
+        "field": "pao2",
+        "op": "<",
+        "value": 56,
+        "text": "Arterial PO2 {value} mmHg is below 56"
+      },
+      {
+        "field": "comorbid",
+        "op": "is",
+        "value": true,
+        "text": "A prior comorbid condition that increases risk"
+      },
+      {
+        "field": "ventilation",
+        "op": "is",
+        "value": true,
+        "text": "Ventilation required (intubation or BiPAP)"
+      },
+      {
+        "field": "failed_op",
+        "op": "is",
+        "value": true,
+        "text": "Failed outpatient treatment"
+      }
+    ]
+  },
+  "observationText": "No inpatient criteria met. The guide gives no separate observation criteria for pneumonia, so use physician judgment."
+}

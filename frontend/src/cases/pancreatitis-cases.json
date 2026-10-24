@@ -1,0 +1,158 @@
+[
+  {
+    "name": "Nothing entered -> Needs review",
+    "inputs": {},
+    "expect": {
+      "status": "review",
+      "reasonIncludes": "Enter the patient"
+    }
+  },
+  {
+    "name": "Acute, but no findings yet -> observation",
+    "inputs": {
+      "acute": true
+    },
+    "expect": {
+      "status": "observation"
+    }
+  },
+  {
+    "name": "Acute with abdominal pain and imaging -> inpatient",
+    "inputs": {
+      "acute": true,
+      "abd_pain": true,
+      "imaging": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "acute",
+        "abd_pain",
+        "imaging"
+      ]
+    }
+  },
+  {
+    "name": "Acute with only abdominal pain -> observation",
+    "inputs": {
+      "acute": true,
+      "abd_pain": true
+    },
+    "expect": {
+      "status": "observation"
+    }
+  },
+  {
+    "name": "Acute with lipase 3 x ULN and imaging -> inpatient",
+    "inputs": {
+      "acute": true,
+      "enzyme_x": 3,
+      "imaging": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "acute",
+        "enzyme_x",
+        "imaging"
+      ]
+    }
+  },
+  {
+    "name": "Acute with lipase 2.9 x ULN and imaging -> observation",
+    "inputs": {
+      "acute": true,
+      "enzyme_x": 2.9,
+      "imaging": true
+    },
+    "expect": {
+      "status": "observation",
+      "notMet": [
+        "enzyme_x"
+      ]
+    }
+  },
+  {
+    "name": "Acute with lipase 4 x ULN and abdominal pain -> inpatient",
+    "inputs": {
+      "acute": true,
+      "enzyme_x": 4,
+      "abd_pain": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "acute",
+        "enzyme_x",
+        "abd_pain"
+      ]
+    }
+  },
+  {
+    "name": "Chronic, pain unresponsive to 3 IV push doses -> inpatient",
+    "inputs": {
+      "acute": false,
+      "iv_analgesic": 3
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "acute",
+        "iv_analgesic"
+      ]
+    }
+  },
+  {
+    "name": "Chronic, 2 IV push doses -> observation",
+    "inputs": {
+      "acute": false,
+      "iv_analgesic": 2
+    },
+    "expect": {
+      "status": "observation",
+      "notMet": [
+        "iv_analgesic"
+      ]
+    }
+  },
+  {
+    "name": "Chronic, with the acute criteria (pain + imaging) -> observation",
+    "inputs": {
+      "acute": false,
+      "abd_pain": true,
+      "imaging": true
+    },
+    "expect": {
+      "status": "observation"
+    }
+  },
+  {
+    "name": "Acute/chronic not answered, with pain and imaging -> Needs review",
+    "inputs": {
+      "abd_pain": true,
+      "imaging": true
+    },
+    "expect": {
+      "status": "review",
+      "missing": [
+        "acute"
+      ]
+    }
+  },
+  {
+    "name": "Medicare, acute with two findings, midnights not answered -> Needs review",
+    "payer": "medicare",
+    "medicare": {},
+    "inputs": {
+      "acute": true,
+      "abd_pain": true,
+      "imaging": true
+    },
+    "expect": {
+      "status": "review",
+      "missing": [
+        "midnights"
+      ]
+    }
+  }
+]

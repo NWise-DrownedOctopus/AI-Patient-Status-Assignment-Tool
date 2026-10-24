@@ -54,6 +54,13 @@ const canExpand = computed(() => props.result !== null)
         </ul>
       </template>
 
+      <template v-if="result.supports && result.supports.length">
+        <h3>Findings that fit observation</h3>
+        <ul>
+          <li v-for="m in result.supports" :key="m.text">{{ m.text }}</li>
+        </ul>
+      </template>
+
       <template v-if="result.medicare && result.medicare.lines.length">
         <h3>Medicare requirement met</h3>
         <ul>
@@ -85,6 +92,13 @@ const canExpand = computed(() => props.result !== null)
         <h3>Why</h3>
         <ul>
           <li v-for="reason in result.reasons" :key="reason">{{ reason }}</li>
+        </ul>
+      </template>
+
+      <template v-if="result.notes && result.notes.length">
+        <h3>Reminders</h3>
+        <ul>
+          <li v-for="note in result.notes" :key="note">{{ note }}</li>
         </ul>
       </template>
     </div>

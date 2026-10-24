@@ -1,0 +1,154 @@
+[
+  {
+    "name": "Failed outpatient treatment not answered -> Needs review",
+    "inputs": {},
+    "expect": {
+      "status": "review",
+      "missing": [
+        "failed_op"
+      ]
+    }
+  },
+  {
+    "name": "Did not fail outpatient treatment -> Needs review",
+    "inputs": {
+      "failed_op": false,
+      "noncompliant": true
+    },
+    "expect": {
+      "status": "review",
+      "missing": []
+    }
+  },
+  {
+    "name": "Failed outpatient treatment, no findings entered -> Needs review",
+    "inputs": {
+      "failed_op": true
+    },
+    "expect": {
+      "status": "review",
+      "reasonIncludes": "Enter the patient"
+    }
+  },
+  {
+    "name": "Temperature 101 is not over 101 -> observation",
+    "inputs": {
+      "failed_op": true,
+      "temp_f": 101
+    },
+    "expect": {
+      "status": "observation",
+      "notMet": [
+        "temp_f"
+      ]
+    }
+  },
+  {
+    "name": "Temperature 101.1 -> inpatient",
+    "inputs": {
+      "failed_op": true,
+      "temp_f": 101.1
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "temp_f"
+      ]
+    }
+  },
+  {
+    "name": "Fever for 3 weeks (FUO) -> inpatient",
+    "inputs": {
+      "failed_op": true,
+      "fever_weeks": 3
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "fever_weeks"
+      ]
+    }
+  },
+  {
+    "name": "Fever for 2 weeks -> observation",
+    "inputs": {
+      "failed_op": true,
+      "fever_weeks": 2
+    },
+    "expect": {
+      "status": "observation",
+      "notMet": [
+        "fever_weeks"
+      ]
+    }
+  },
+  {
+    "name": "Deterioration despite 24 hours of therapy -> inpatient",
+    "inputs": {
+      "failed_op": true,
+      "deteriorating": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "deteriorating"
+      ]
+    }
+  },
+  {
+    "name": "Non-compliant with outpatient therapy -> inpatient",
+    "inputs": {
+      "failed_op": true,
+      "noncompliant": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "noncompliant"
+      ]
+    }
+  },
+  {
+    "name": "Cannot tolerate oral treatment -> inpatient",
+    "inputs": {
+      "failed_op": true,
+      "no_oral": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "no_oral"
+      ]
+    }
+  },
+  {
+    "name": "Fever and non-compliance are both listed",
+    "inputs": {
+      "failed_op": true,
+      "temp_f": 102.5,
+      "noncompliant": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "temp_f",
+        "noncompliant"
+      ]
+    }
+  },
+  {
+    "name": "Medicare, cannot tolerate oral treatment, midnights not answered -> Needs review",
+    "payer": "medicare",
+    "medicare": {},
+    "inputs": {
+      "failed_op": true,
+      "no_oral": true
+    },
+    "expect": {
+      "status": "review",
+      "missing": [
+        "midnights"
+      ]
+    }
+  }
+]

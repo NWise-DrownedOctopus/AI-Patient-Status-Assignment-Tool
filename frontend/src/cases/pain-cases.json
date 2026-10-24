@@ -1,0 +1,163 @@
+[
+  {
+    "name": "High-risk question not answered -> Needs review",
+    "inputs": {},
+    "expect": {
+      "status": "review",
+      "missing": [
+        "high_risk"
+      ]
+    }
+  },
+  {
+    "name": "High-risk issue of concern -> inpatient",
+    "inputs": {
+      "high_risk": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "high_risk"
+      ]
+    }
+  },
+  {
+    "name": "No high-risk issue -> observation",
+    "inputs": {
+      "high_risk": false
+    },
+    "expect": {
+      "status": "observation",
+      "supports": []
+    }
+  },
+  {
+    "name": "Intractable chronic pain, no high-risk issue -> observation",
+    "inputs": {
+      "high_risk": false,
+      "chronic": true
+    },
+    "expect": {
+      "status": "observation",
+      "supports": [
+        "chronic"
+      ]
+    }
+  },
+  {
+    "name": "Abdominal pain of unknown cause -> observation",
+    "inputs": {
+      "high_risk": false,
+      "unknown_abd": true
+    },
+    "expect": {
+      "status": "observation",
+      "supports": [
+        "unknown_abd"
+      ]
+    }
+  },
+  {
+    "name": "Migraine that failed outpatient treatment -> observation",
+    "inputs": {
+      "high_risk": false,
+      "migraine": true
+    },
+    "expect": {
+      "status": "observation",
+      "supports": [
+        "migraine"
+      ]
+    }
+  },
+  {
+    "name": "Suspected sickle cell crisis -> observation",
+    "inputs": {
+      "high_risk": false,
+      "sickle": true
+    },
+    "expect": {
+      "status": "observation",
+      "supports": [
+        "sickle"
+      ]
+    }
+  },
+  {
+    "name": "Renal stone without fever (98.6) -> observation",
+    "inputs": {
+      "high_risk": false,
+      "stone": true,
+      "temp_f": 98.6
+    },
+    "expect": {
+      "status": "observation",
+      "supports": [
+        "stone",
+        "temp_f"
+      ]
+    }
+  },
+  {
+    "name": "Renal stone with temperature 99.4 -> Needs review",
+    "inputs": {
+      "high_risk": false,
+      "stone": true,
+      "temp_f": 99.4
+    },
+    "expect": {
+      "status": "review",
+      "reasonIncludes": "99.4"
+    }
+  },
+  {
+    "name": "Renal stone with no temperature entered -> Needs review",
+    "inputs": {
+      "high_risk": false,
+      "stone": true
+    },
+    "expect": {
+      "status": "review",
+      "reasonIncludes": "temperature"
+    }
+  },
+  {
+    "name": "High-risk issue wins over a febrile stone",
+    "inputs": {
+      "high_risk": true,
+      "stone": true,
+      "temp_f": 101
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "high_risk"
+      ]
+    }
+  },
+  {
+    "name": "Medicare, high-risk issue, midnights not answered -> Needs review",
+    "payer": "medicare",
+    "medicare": {},
+    "inputs": {
+      "high_risk": true
+    },
+    "expect": {
+      "status": "review",
+      "missing": [
+        "midnights"
+      ]
+    }
+  },
+  {
+    "name": "Medicare, observation result is unaffected",
+    "payer": "medicare",
+    "medicare": {},
+    "inputs": {
+      "high_risk": false
+    },
+    "expect": {
+      "status": "observation"
+    }
+  }
+]

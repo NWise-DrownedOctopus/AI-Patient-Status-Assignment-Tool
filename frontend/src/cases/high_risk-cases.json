@@ -1,0 +1,50 @@
+[
+  {
+    "name": "Not answered -> Needs review",
+    "inputs": {},
+    "expect": {
+      "status": "review",
+      "missing": [
+        "high_risk"
+      ]
+    }
+  },
+  {
+    "name": "Probable or possible high-risk condition -> inpatient",
+    "inputs": {
+      "high_risk": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "high_risk"
+      ]
+    }
+  },
+  {
+    "name": "Not a high-risk condition -> Needs review (choose the matching condition, never Observation)",
+    "inputs": {
+      "high_risk": false
+    },
+    "expect": {
+      "status": "review",
+      "reasonIncludes": "catch-all"
+    }
+  },
+  {
+    "name": "Medicare, high-risk, 2+ midnights -> inpatient",
+    "payer": "medicare",
+    "medicare": {
+      "midnights": true
+    },
+    "inputs": {
+      "high_risk": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "high_risk"
+      ]
+    }
+  }
+]

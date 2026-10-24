@@ -1,0 +1,98 @@
+[
+  {
+    "name": "Nothing answered -> Needs review naming all three questions",
+    "inputs": {},
+    "expect": {
+      "status": "review",
+      "missing": [
+        "si",
+        "hi",
+        "threat_self"
+      ]
+    }
+  },
+  {
+    "name": "Suicidal ideation -> inpatient even with the rest unanswered",
+    "inputs": {
+      "si": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "si"
+      ]
+    }
+  },
+  {
+    "name": "Homicidal ideation -> inpatient",
+    "inputs": {
+      "hi": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "hi"
+      ]
+    }
+  },
+  {
+    "name": "Threat to self -> inpatient",
+    "inputs": {
+      "threat_self": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "threat_self"
+      ]
+    }
+  },
+  {
+    "name": "All three answered No -> observation",
+    "inputs": {
+      "si": false,
+      "hi": false,
+      "threat_self": false
+    },
+    "expect": {
+      "status": "observation"
+    }
+  },
+  {
+    "name": "Two answered No, one unanswered -> Needs review",
+    "inputs": {
+      "si": false,
+      "hi": false
+    },
+    "expect": {
+      "status": "review",
+      "missing": [
+        "threat_self"
+      ]
+    }
+  },
+  {
+    "name": "Medicare, suicidal ideation, midnights not answered -> Needs review",
+    "payer": "medicare",
+    "medicare": {},
+    "inputs": {
+      "si": true
+    },
+    "expect": {
+      "status": "review",
+      "missing": [
+        "midnights"
+      ]
+    }
+  },
+  {
+    "name": "Reminder about moving between psychiatric and medical units",
+    "inputs": {
+      "si": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "notesInclude": "psychiatric unit"
+    }
+  }
+]

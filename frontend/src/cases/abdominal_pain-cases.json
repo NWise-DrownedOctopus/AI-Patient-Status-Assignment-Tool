@@ -1,0 +1,147 @@
+[
+  {
+    "name": "Nothing entered -> Needs review",
+    "inputs": {},
+    "expect": {
+      "status": "review",
+      "reasonIncludes": "Enter the patient"
+    }
+  },
+  {
+    "name": "Diverticulitis on imaging -> inpatient",
+    "inputs": {
+      "diverticulitis": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "diverticulitis"
+      ]
+    }
+  },
+  {
+    "name": "Mental status change -> inpatient",
+    "inputs": {
+      "mental_status": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "mental_status"
+      ]
+    }
+  },
+  {
+    "name": "Protracted vomiting -> inpatient",
+    "inputs": {
+      "vomiting": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "vomiting"
+      ]
+    }
+  },
+  {
+    "name": "Bowel obstruction -> inpatient",
+    "inputs": {
+      "obstruction": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "obstruction"
+      ]
+    }
+  },
+  {
+    "name": "Temperature 101 and WBC 16 -> inpatient",
+    "inputs": {
+      "temp_f": 101,
+      "wbc": 16
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "temp_f",
+        "wbc"
+      ]
+    }
+  },
+  {
+    "name": "Temperature 101 with WBC 15 (not over 15) -> observation",
+    "inputs": {
+      "temp_f": 101,
+      "wbc": 15
+    },
+    "expect": {
+      "status": "observation",
+      "notMet": [
+        "wbc"
+      ]
+    }
+  },
+  {
+    "name": "Temperature 100.4 (not over 100.4) with WBC 20 -> observation",
+    "inputs": {
+      "temp_f": 100.4,
+      "wbc": 20
+    },
+    "expect": {
+      "status": "observation",
+      "notMet": [
+        "temp_f"
+      ]
+    }
+  },
+  {
+    "name": "Fever without a WBC entered -> observation",
+    "inputs": {
+      "temp_f": 101
+    },
+    "expect": {
+      "status": "observation",
+      "notMet": []
+    }
+  },
+  {
+    "name": "Pain with unknown cause -> observation",
+    "inputs": {
+      "unknown_cause": true
+    },
+    "expect": {
+      "status": "observation",
+      "supports": [
+        "unknown_cause"
+      ]
+    }
+  },
+  {
+    "name": "Unknown cause plus bowel obstruction -> inpatient",
+    "inputs": {
+      "unknown_cause": true,
+      "obstruction": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "obstruction"
+      ]
+    }
+  },
+  {
+    "name": "Medicare, obstruction, midnights not answered -> Needs review",
+    "payer": "medicare",
+    "medicare": {},
+    "inputs": {
+      "obstruction": true
+    },
+    "expect": {
+      "status": "review",
+      "missing": [
+        "midnights"
+      ]
+    }
+  }
+]

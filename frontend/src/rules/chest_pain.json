@@ -1,0 +1,142 @@
+{
+  "id": "chest_pain",
+  "label": "Chest pain",
+  "source": "Guide for Physicians on Level of Care: Chest Pain",
+  "inputs": [
+    {
+      "id": "controlled",
+      "label": "Chest pain is controlled",
+      "type": "toggle",
+      "required": true
+    },
+    {
+      "id": "cad_risk",
+      "label": "Physician perceives risk of coronary disease",
+      "type": "toggle",
+      "required": true
+    },
+    {
+      "id": "stable",
+      "label": "Hemodynamically stable",
+      "type": "toggle",
+      "required": true
+    },
+    {
+      "id": "sbp",
+      "label": "Systolic blood pressure",
+      "type": "number",
+      "unit": "mmHg",
+      "min": 40,
+      "max": 260,
+      "step": 5,
+      "start": 120
+    },
+    {
+      "id": "hf_arrhythmia",
+      "label": "Heart failure or arrhythmia",
+      "type": "toggle"
+    },
+    {
+      "id": "syncope",
+      "label": "Syncope",
+      "type": "toggle"
+    },
+    {
+      "id": "mi",
+      "label": "STEMI or NSTEMI",
+      "type": "toggle"
+    },
+    {
+      "id": "troponin",
+      "label": "Positive troponins",
+      "type": "toggle"
+    },
+    {
+      "id": "ischemia",
+      "label": "Ischemia on stress test ECG",
+      "type": "toggle"
+    },
+    {
+      "id": "paced",
+      "label": "Paced rhythm",
+      "type": "toggle"
+    }
+  ],
+  "prerequisites": [
+    {
+      "field": "controlled",
+      "op": "is",
+      "value": true,
+      "text": "Chest pain is controlled",
+      "failText": "Chest pain is not controlled. The guide's chest pain criteria assume controlled pain, so use clinical judgment."
+    },
+    {
+      "field": "cad_risk",
+      "op": "is",
+      "value": true,
+      "text": "Physician perceives risk of coronary disease",
+      "failText": "The guide's chest pain criteria apply when the physician perceives a risk of coronary disease. If you do not, use clinical judgment."
+    }
+  ],
+  "inpatient": {
+    "any": [
+      {
+        "field": "stable",
+        "op": "is",
+        "value": false,
+        "text": "Hemodynamically unstable"
+      },
+      {
+        "field": "sbp",
+        "op": "<=",
+        "value": 90,
+        "text": "Systolic blood pressure {value} mmHg is 90 or below (not hemodynamically stable)"
+      },
+      {
+        "field": "hf_arrhythmia",
+        "op": "is",
+        "value": true,
+        "text": "Heart failure or arrhythmia"
+      },
+      {
+        "field": "syncope",
+        "op": "is",
+        "value": true,
+        "text": "Syncope"
+      },
+      {
+        "field": "mi",
+        "op": "is",
+        "value": true,
+        "text": "STEMI or NSTEMI"
+      },
+      {
+        "all": [
+          {
+            "field": "troponin",
+            "op": "is",
+            "value": true,
+            "text": "Positive troponins"
+          },
+          {
+            "any": [
+              {
+                "field": "ischemia",
+                "op": "is",
+                "value": true,
+                "text": "Ischemia on stress test ECG"
+              },
+              {
+                "field": "paced",
+                "op": "is",
+                "value": true,
+                "text": "Paced rhythm"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "observationText": "Controlled chest pain in a stable patient with none of the listed findings: the guide advises placing the patient in observation."
+}

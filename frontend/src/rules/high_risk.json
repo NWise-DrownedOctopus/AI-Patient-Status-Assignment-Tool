@@ -1,0 +1,34 @@
+{
+  "id": "high_risk",
+  "label": "High-risk (other)",
+  "source": "Guide for Physicians on Level of Care: High-risk condition",
+  "inputs": [
+    {
+      "id": "high_risk",
+      "label": "Probable or possible high-risk condition with a known high chance of an adverse outcome (for example, occluded superior mesenteric artery thrombosis)",
+      "type": "toggle",
+      "required": true
+    }
+  ],
+  "inpatient": {
+    "any": [
+      {
+        "field": "high_risk",
+        "op": "is",
+        "value": true,
+        "text": "Probable or possible high-risk condition with a known high chance of an adverse outcome"
+      }
+    ]
+  },
+  "reviewWhen": [
+    {
+      "when": {
+        "field": "high_risk",
+        "op": "is",
+        "value": false
+      },
+      "text": "This catch-all applies only to high-risk conditions. Choose the condition that matches the patient, or use physician judgment."
+    }
+  ],
+  "observationText": ""
+}

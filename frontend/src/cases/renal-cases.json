@@ -1,0 +1,114 @@
+[
+  {
+    "name": "Nothing entered -> Needs review",
+    "inputs": {},
+    "expect": {
+      "status": "review",
+      "reasonIncludes": "Enter the patient"
+    }
+  },
+  {
+    "name": "Creatinine up 0.6 over baseline -> inpatient",
+    "inputs": {
+      "cr_rise": 0.6
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "cr_rise"
+      ]
+    }
+  },
+  {
+    "name": "Creatinine up exactly 0.5 -> observation",
+    "inputs": {
+      "cr_rise": 0.5
+    },
+    "expect": {
+      "status": "observation",
+      "notMet": [
+        "cr_rise"
+      ]
+    }
+  },
+  {
+    "name": "Creatinine up 0.51 -> inpatient",
+    "inputs": {
+      "cr_rise": 0.51
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "cr_rise"
+      ]
+    }
+  },
+  {
+    "name": "No rise (0) -> observation",
+    "inputs": {
+      "cr_rise": 0
+    },
+    "expect": {
+      "status": "observation",
+      "notMet": [
+        "cr_rise"
+      ]
+    }
+  },
+  {
+    "name": "Urgent inpatient dialysis -> inpatient",
+    "inputs": {
+      "dialysis": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "dialysis"
+      ]
+    }
+  },
+  {
+    "name": "Rise and dialysis are both listed",
+    "inputs": {
+      "cr_rise": 1.2,
+      "dialysis": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "cr_rise",
+        "dialysis"
+      ]
+    }
+  },
+  {
+    "name": "Medicare, dialysis, midnights not answered -> Needs review",
+    "payer": "medicare",
+    "medicare": {},
+    "inputs": {
+      "dialysis": true
+    },
+    "expect": {
+      "status": "review",
+      "missing": [
+        "midnights"
+      ]
+    }
+  },
+  {
+    "name": "Medicare, dialysis, patient transferred -> inpatient via exclusion",
+    "payer": "medicare",
+    "medicare": {
+      "transfer": true
+    },
+    "inputs": {
+      "dialysis": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "dialysis"
+      ]
+    }
+  }
+]

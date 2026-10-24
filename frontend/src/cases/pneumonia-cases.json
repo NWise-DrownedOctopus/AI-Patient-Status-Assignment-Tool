@@ -1,0 +1,272 @@
+[
+  {
+    "name": "Age and O2 saturation not entered -> Needs review naming both",
+    "inputs": {},
+    "expect": {
+      "status": "review",
+      "missing": [
+        "age",
+        "o2sat"
+      ]
+    }
+  },
+  {
+    "name": "Age 65 -> inpatient",
+    "inputs": {
+      "age": 65,
+      "o2sat": 95
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "age"
+      ]
+    }
+  },
+  {
+    "name": "Age 64 with nothing else -> observation",
+    "inputs": {
+      "age": 64,
+      "o2sat": 95
+    },
+    "expect": {
+      "status": "observation",
+      "notMet": [
+        "age",
+        "o2sat"
+      ]
+    }
+  },
+  {
+    "name": "O2 saturation 89% -> inpatient",
+    "inputs": {
+      "age": 40,
+      "o2sat": 89
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "o2sat"
+      ]
+    }
+  },
+  {
+    "name": "O2 saturation 90% -> observation",
+    "inputs": {
+      "age": 40,
+      "o2sat": 90
+    },
+    "expect": {
+      "status": "observation",
+      "notMet": [
+        "age",
+        "o2sat"
+      ]
+    }
+  },
+  {
+    "name": "Heart rate 121 -> inpatient",
+    "inputs": {
+      "age": 40,
+      "o2sat": 95,
+      "hr": 121
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "hr"
+      ]
+    }
+  },
+  {
+    "name": "Heart rate 120 -> observation",
+    "inputs": {
+      "age": 40,
+      "o2sat": 95,
+      "hr": 120
+    },
+    "expect": {
+      "status": "observation",
+      "notMet": [
+        "age",
+        "o2sat",
+        "hr"
+      ]
+    }
+  },
+  {
+    "name": "2 lobes involved -> inpatient",
+    "inputs": {
+      "age": 40,
+      "o2sat": 95,
+      "lobes": 2
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "lobes"
+      ]
+    }
+  },
+  {
+    "name": "1 lobe involved -> observation",
+    "inputs": {
+      "age": 40,
+      "o2sat": 95,
+      "lobes": 1
+    },
+    "expect": {
+      "status": "observation",
+      "notMet": [
+        "age",
+        "o2sat",
+        "lobes"
+      ]
+    }
+  },
+  {
+    "name": "Arterial PO2 55 -> inpatient (threshold is 56)",
+    "inputs": {
+      "age": 40,
+      "o2sat": 95,
+      "pao2": 55
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "pao2"
+      ]
+    }
+  },
+  {
+    "name": "Arterial PO2 56 -> observation",
+    "inputs": {
+      "age": 40,
+      "o2sat": 95,
+      "pao2": 56
+    },
+    "expect": {
+      "status": "observation",
+      "notMet": [
+        "age",
+        "o2sat",
+        "pao2"
+      ]
+    }
+  },
+  {
+    "name": "Comorbid condition that raises risk -> inpatient",
+    "inputs": {
+      "age": 40,
+      "o2sat": 95,
+      "comorbid": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "comorbid"
+      ]
+    }
+  },
+  {
+    "name": "Failed outpatient treatment -> inpatient",
+    "inputs": {
+      "age": 40,
+      "o2sat": 95,
+      "failed_op": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "failed_op"
+      ]
+    }
+  },
+  {
+    "name": "Ventilation required -> inpatient",
+    "inputs": {
+      "age": 40,
+      "o2sat": 95,
+      "ventilation": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "ventilation"
+      ]
+    }
+  },
+  {
+    "name": "Age not entered but a comorbid condition -> inpatient (a met criterion wins)",
+    "inputs": {
+      "o2sat": 95,
+      "comorbid": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "comorbid"
+      ]
+    }
+  },
+  {
+    "name": "Medicare, age 70, midnights not answered -> Needs review",
+    "payer": "medicare",
+    "medicare": {},
+    "inputs": {
+      "age": 70,
+      "o2sat": 95
+    },
+    "expect": {
+      "status": "review",
+      "missing": [
+        "midnights"
+      ]
+    }
+  },
+  {
+    "name": "Medicare, age 70, 2+ midnights -> inpatient",
+    "payer": "medicare",
+    "medicare": {
+      "midnights": true
+    },
+    "inputs": {
+      "age": 70,
+      "o2sat": 95
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "age"
+      ]
+    }
+  },
+  {
+    "name": "Medicare, ventilation is an exclusion -> inpatient",
+    "payer": "medicare",
+    "medicare": {},
+    "inputs": {
+      "age": 40,
+      "o2sat": 95,
+      "ventilation": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "ventilation"
+      ]
+    }
+  },
+  {
+    "name": "Medicare, observation result is unaffected",
+    "payer": "medicare",
+    "medicare": {},
+    "inputs": {
+      "age": 40,
+      "o2sat": 95
+    },
+    "expect": {
+      "status": "observation"
+    }
+  }
+]

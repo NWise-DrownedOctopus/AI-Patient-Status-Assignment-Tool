@@ -1,0 +1,330 @@
+[
+  {
+    "name": "Nothing entered -> Needs review, not Observation",
+    "inputs": {},
+    "expect": {
+      "status": "review",
+      "reasonIncludes": "Enter the patient"
+    }
+  },
+  {
+    "name": "Heart rate 101 -> inpatient",
+    "inputs": {
+      "hr": 101
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "hr"
+      ],
+      "notMet": []
+    }
+  },
+  {
+    "name": "Heart rate 100 is not \"over 100\" -> observation",
+    "inputs": {
+      "hr": 100
+    },
+    "expect": {
+      "status": "observation",
+      "notMet": [
+        "hr"
+      ],
+      "supports": []
+    }
+  },
+  {
+    "name": "Platelets 59 -> inpatient",
+    "inputs": {
+      "platelets": 59
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "platelets"
+      ]
+    }
+  },
+  {
+    "name": "Platelets 60 is not below 60 -> observation",
+    "inputs": {
+      "platelets": 60
+    },
+    "expect": {
+      "status": "observation",
+      "notMet": [
+        "platelets"
+      ]
+    }
+  },
+  {
+    "name": "Hemoglobin 8.2 -> inpatient",
+    "inputs": {
+      "hgb": 8.2
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "hgb"
+      ]
+    }
+  },
+  {
+    "name": "Hemoglobin 8.3 is not below 8.3 -> observation",
+    "inputs": {
+      "hgb": 8.3
+    },
+    "expect": {
+      "status": "observation",
+      "notMet": [
+        "hgb"
+      ]
+    }
+  },
+  {
+    "name": "Hematocrit 24 -> inpatient",
+    "inputs": {
+      "hct": 24
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "hct"
+      ]
+    }
+  },
+  {
+    "name": "Hematocrit 25 -> observation",
+    "inputs": {
+      "hct": 25
+    },
+    "expect": {
+      "status": "observation",
+      "notMet": [
+        "hct"
+      ]
+    }
+  },
+  {
+    "name": "Low hematocrit, asymptomatic, unknown cause -> observation (guide)",
+    "inputs": {
+      "hct": 24,
+      "asymptomatic_unknown": true
+    },
+    "expect": {
+      "status": "observation",
+      "notMet": [],
+      "supports": [
+        "hct",
+        "asymptomatic_unknown"
+      ]
+    }
+  },
+  {
+    "name": "Low hemoglobin, asymptomatic, unknown cause -> observation",
+    "inputs": {
+      "hgb": 7.5,
+      "asymptomatic_unknown": true
+    },
+    "expect": {
+      "status": "observation",
+      "supports": [
+        "hgb",
+        "asymptomatic_unknown"
+      ]
+    }
+  },
+  {
+    "name": "Low hematocrit, asymptomatic unknown cause, but heart rate 110 -> inpatient",
+    "inputs": {
+      "hct": 24,
+      "asymptomatic_unknown": true,
+      "hr": 110
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "hr"
+      ]
+    }
+  },
+  {
+    "name": "PT 1.5 x ULN is not more than 1.5 -> observation",
+    "inputs": {
+      "pt": 1.5
+    },
+    "expect": {
+      "status": "observation",
+      "notMet": [
+        "pt"
+      ]
+    }
+  },
+  {
+    "name": "PT 1.6 x ULN -> inpatient",
+    "inputs": {
+      "pt": 1.6
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "pt"
+      ]
+    }
+  },
+  {
+    "name": "PTT 2 x ULN -> inpatient",
+    "inputs": {
+      "ptt": 2
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "ptt"
+      ]
+    }
+  },
+  {
+    "name": "Postural BP drop 30 -> observation",
+    "inputs": {
+      "postural_drop": 30
+    },
+    "expect": {
+      "status": "observation",
+      "notMet": [
+        "postural_drop"
+      ]
+    }
+  },
+  {
+    "name": "Postural BP drop 31 -> inpatient",
+    "inputs": {
+      "postural_drop": 31
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "postural_drop"
+      ]
+    }
+  },
+  {
+    "name": "Syncope -> inpatient",
+    "inputs": {
+      "syncope": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "syncope"
+      ]
+    }
+  },
+  {
+    "name": "Transfusion given -> inpatient",
+    "inputs": {
+      "transfusion": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "transfusion"
+      ]
+    }
+  },
+  {
+    "name": "Disorientation -> inpatient",
+    "inputs": {
+      "disorientation": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "disorientation"
+      ]
+    }
+  },
+  {
+    "name": "Bleeding disorder only -> observation",
+    "inputs": {
+      "bleeding_disorder": true
+    },
+    "expect": {
+      "status": "observation",
+      "supports": [
+        "bleeding_disorder"
+      ]
+    }
+  },
+  {
+    "name": "Epistaxis with packing and bleeding over 24 hours -> observation",
+    "inputs": {
+      "epistaxis": true,
+      "persistent": true
+    },
+    "expect": {
+      "status": "observation",
+      "supports": [
+        "epistaxis",
+        "persistent"
+      ]
+    }
+  },
+  {
+    "name": "Several inpatient findings are all listed",
+    "inputs": {
+      "hr": 120,
+      "platelets": 40,
+      "transfusion": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "hr",
+        "platelets",
+        "transfusion"
+      ]
+    }
+  },
+  {
+    "name": "Medicare, transfusion, 2+ midnights -> inpatient",
+    "payer": "medicare",
+    "medicare": {
+      "midnights": true
+    },
+    "inputs": {
+      "transfusion": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "transfusion"
+      ]
+    }
+  },
+  {
+    "name": "Medicare, transfusion, midnights not answered -> Needs review",
+    "payer": "medicare",
+    "medicare": {},
+    "inputs": {
+      "transfusion": true
+    },
+    "expect": {
+      "status": "review",
+      "missing": [
+        "midnights"
+      ]
+    }
+  },
+  {
+    "name": "Medicare, observation result is unaffected",
+    "payer": "medicare",
+    "medicare": {},
+    "inputs": {
+      "bleeding_disorder": true
+    },
+    "expect": {
+      "status": "observation"
+    }
+  }
+]

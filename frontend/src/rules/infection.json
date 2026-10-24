@@ -1,0 +1,92 @@
+{
+  "id": "infection",
+  "label": "Infection",
+  "source": "Guide for Physicians on Level of Care: Infection that failed outpatient treatment",
+  "inputs": [
+    {
+      "id": "failed_op",
+      "label": "Infection failed outpatient treatment",
+      "type": "toggle",
+      "required": true
+    },
+    {
+      "id": "deteriorating",
+      "label": "Continued deterioration despite more than 24 hours of therapy",
+      "type": "toggle"
+    },
+    {
+      "id": "noncompliant",
+      "label": "Non-compliant with outpatient therapy",
+      "type": "toggle"
+    },
+    {
+      "id": "temp_f",
+      "label": "Temperature (rectal, or equivalent)",
+      "type": "number",
+      "unit": "°F",
+      "min": 90,
+      "max": 110,
+      "step": 0.1,
+      "start": 98.6
+    },
+    {
+      "id": "fever_weeks",
+      "label": "Weeks the temperature has persisted",
+      "type": "number",
+      "unit": "weeks",
+      "min": 0,
+      "max": 52,
+      "step": 1,
+      "start": 0
+    },
+    {
+      "id": "no_oral",
+      "label": "Unable to tolerate or absorb oral anti-infection treatment",
+      "type": "toggle"
+    }
+  ],
+  "prerequisites": [
+    {
+      "field": "failed_op",
+      "op": "is",
+      "value": true,
+      "text": "Infection failed outpatient treatment",
+      "failText": "The guide's infection criteria apply to an infection that failed outpatient treatment. For other infections use clinical judgment, or choose a more specific condition such as Pneumonia."
+    }
+  ],
+  "inpatient": {
+    "any": [
+      {
+        "field": "deteriorating",
+        "op": "is",
+        "value": true,
+        "text": "Continued deterioration despite more than 24 hours of therapy"
+      },
+      {
+        "field": "noncompliant",
+        "op": "is",
+        "value": true,
+        "text": "Non-compliant with outpatient therapy"
+      },
+      {
+        "field": "temp_f",
+        "op": ">",
+        "value": 101,
+        "text": "Temperature {value} °F is over 101 °F"
+      },
+      {
+        "field": "fever_weeks",
+        "op": ">=",
+        "value": 3,
+        "text": "Temperature has persisted for {value} weeks (3 or more, FUO)"
+      },
+      {
+        "field": "no_oral",
+        "op": "is",
+        "value": true,
+        "text": "Unable to tolerate or absorb oral anti-infection treatment"
+      }
+    ]
+  },
+  "observationText": "No inpatient criteria met. The guide gives no separate observation criteria for infection, so use physician judgment."
+}

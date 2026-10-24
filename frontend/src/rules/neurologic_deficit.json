@@ -1,0 +1,129 @@
+{
+  "id": "neurologic_deficit",
+  "label": "Neurologic deficit",
+  "source": "Guide for Physicians on Level of Care: Neurologic deficit",
+  "inputs": [
+    {
+      "id": "mental_status",
+      "label": "Acute mental status change",
+      "type": "toggle"
+    },
+    {
+      "id": "aphasia",
+      "label": "Aphasia or dysarthria",
+      "type": "toggle"
+    },
+    {
+      "id": "vision",
+      "label": "Blindness or visual field loss",
+      "type": "toggle"
+    },
+    {
+      "id": "dysphagia",
+      "label": "Dysphagia",
+      "type": "toggle"
+    },
+    {
+      "id": "paresis",
+      "label": "Paresis or paralysis of an extremity",
+      "type": "toggle"
+    },
+    {
+      "id": "unconscious",
+      "label": "Unconsciousness",
+      "type": "toggle"
+    },
+    {
+      "id": "stroke",
+      "label": "Stroke or subacute stroke",
+      "type": "toggle"
+    },
+    {
+      "id": "tia",
+      "label": "TIA that will be worked up during this hospitalization",
+      "type": "toggle"
+    },
+    {
+      "id": "exacerbation",
+      "label": "Exacerbation of an existing deficit (such as incoordination or ataxia)",
+      "type": "toggle"
+    },
+    {
+      "id": "weakness",
+      "label": "Muscle weakness",
+      "type": "toggle"
+    }
+  ],
+  "inpatient": {
+    "any": [
+      {
+        "field": "mental_status",
+        "op": "is",
+        "value": true,
+        "text": "Acute mental status change"
+      },
+      {
+        "field": "aphasia",
+        "op": "is",
+        "value": true,
+        "text": "Aphasia or dysarthria"
+      },
+      {
+        "field": "vision",
+        "op": "is",
+        "value": true,
+        "text": "Blindness or visual field loss"
+      },
+      {
+        "field": "dysphagia",
+        "op": "is",
+        "value": true,
+        "text": "Dysphagia"
+      },
+      {
+        "field": "paresis",
+        "op": "is",
+        "value": true,
+        "text": "Paresis or paralysis of an extremity"
+      },
+      {
+        "field": "unconscious",
+        "op": "is",
+        "value": true,
+        "text": "Unconsciousness"
+      },
+      {
+        "field": "stroke",
+        "op": "is",
+        "value": true,
+        "text": "Stroke or subacute stroke"
+      },
+      {
+        "field": "tia",
+        "op": "is",
+        "value": true,
+        "text": "TIA that will be worked up during this hospitalization"
+      }
+    ]
+  },
+  "observation": {
+    "any": [
+      {
+        "field": "exacerbation",
+        "op": "is",
+        "value": true,
+        "text": "Exacerbation of an existing neurologic deficit"
+      },
+      {
+        "field": "weakness",
+        "op": "is",
+        "value": true,
+        "text": "Muscle weakness"
+      }
+    ]
+  },
+  "notes": [
+    "Neuro checks are required every 4 hours for inpatient or observation level of care with a neurologic deficit or acute mental status change."
+  ],
+  "observationText": "No inpatient criteria met. The guide lists exacerbation of an existing deficit (such as incoordination or ataxia) and muscle weakness as likely observation."
+}

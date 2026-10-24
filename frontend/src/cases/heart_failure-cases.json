@@ -1,0 +1,186 @@
+[
+  {
+    "name": "2 doses of IV diuretic -> inpatient",
+    "inputs": {
+      "stable": true,
+      "o2sat": 95,
+      "iv_diuretic": 2
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "iv_diuretic"
+      ]
+    }
+  },
+  {
+    "name": "1 dose of IV diuretic -> observation",
+    "inputs": {
+      "stable": true,
+      "o2sat": 95,
+      "iv_diuretic": 1
+    },
+    "expect": {
+      "status": "observation",
+      "notMet": [
+        "iv_diuretic",
+        "o2sat"
+      ]
+    }
+  },
+  {
+    "name": "No IV diuretic yet (0 doses) -> observation",
+    "inputs": {
+      "stable": true,
+      "o2sat": 95,
+      "iv_diuretic": 0
+    },
+    "expect": {
+      "status": "observation",
+      "notMet": [
+        "iv_diuretic",
+        "o2sat"
+      ]
+    }
+  },
+  {
+    "name": "Dyspnea criteria apply: sat 88% -> inpatient",
+    "inputs": {
+      "stable": true,
+      "o2sat": 88
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "o2sat"
+      ]
+    }
+  },
+  {
+    "name": "Dyspnea criteria apply: hemoptysis 60 mL -> inpatient",
+    "inputs": {
+      "stable": true,
+      "o2sat": 95,
+      "hemoptysis_ml": 60
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "hemoptysis_ml"
+      ]
+    }
+  },
+  {
+    "name": "Dyspnea criteria apply: PCO2 50 with pH 7.33 -> inpatient",
+    "inputs": {
+      "stable": true,
+      "o2sat": 95,
+      "paco2": 50,
+      "ph": 7.33
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "paco2",
+        "ph"
+      ]
+    }
+  },
+  {
+    "name": "COPD with IV anti-infection therapy -> inpatient",
+    "inputs": {
+      "stable": true,
+      "o2sat": 95,
+      "copd": true,
+      "iv_antiinfective": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "copd",
+        "iv_antiinfective"
+      ]
+    }
+  },
+  {
+    "name": "Not hemodynamically stable -> Needs review",
+    "inputs": {
+      "stable": false,
+      "o2sat": 95,
+      "iv_diuretic": 3
+    },
+    "expect": {
+      "status": "review"
+    }
+  },
+  {
+    "name": "Stability not answered -> Needs review even with 3 diuretic doses",
+    "inputs": {
+      "o2sat": 95,
+      "iv_diuretic": 3
+    },
+    "expect": {
+      "status": "review",
+      "missing": [
+        "stable"
+      ]
+    }
+  },
+  {
+    "name": "Sat not entered but 2 diuretic doses -> inpatient (a met criterion wins)",
+    "inputs": {
+      "stable": true,
+      "iv_diuretic": 2
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "iv_diuretic"
+      ]
+    }
+  },
+  {
+    "name": "Sat not entered, nothing else -> Needs review",
+    "inputs": {
+      "stable": true
+    },
+    "expect": {
+      "status": "review",
+      "missing": [
+        "o2sat"
+      ]
+    }
+  },
+  {
+    "name": "Medicare, 2 diuretic doses, midnights not answered -> Needs review",
+    "payer": "medicare",
+    "medicare": {},
+    "inputs": {
+      "stable": true,
+      "o2sat": 95,
+      "iv_diuretic": 2
+    },
+    "expect": {
+      "status": "review",
+      "missing": [
+        "midnights"
+      ]
+    }
+  },
+  {
+    "name": "Medicare, ventilation counts as an exclusion -> inpatient",
+    "payer": "medicare",
+    "medicare": {},
+    "inputs": {
+      "stable": true,
+      "o2sat": 95,
+      "ventilation": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "ventilation"
+      ]
+    }
+  }
+]

@@ -1,0 +1,87 @@
+{
+  "id": "seizures",
+  "label": "Seizures",
+  "source": "Guide for Physicians on Level of Care: Seizures",
+  "inputs": [
+    {
+      "id": "therapeutic_level",
+      "label": "Therapeutic anticonvulsant drug level with known seizure history",
+      "type": "toggle"
+    },
+    {
+      "id": "pattern_change",
+      "label": "Change in seizure pattern",
+      "type": "toggle"
+    },
+    {
+      "id": "multiple",
+      "label": "Multiple episodes over 24 hours",
+      "type": "toggle"
+    },
+    {
+      "id": "sodium",
+      "label": "Sodium",
+      "type": "number",
+      "unit": "mmol/L",
+      "min": 100,
+      "max": 180,
+      "step": 1,
+      "start": 140
+    },
+    {
+      "id": "mapping",
+      "label": "Surgical mapping",
+      "type": "toggle"
+    },
+    {
+      "id": "postictal",
+      "label": "Prolonged postictal state (over 10 minutes) in a known seizure disorder",
+      "type": "toggle"
+    }
+  ],
+  "inpatient": {
+    "any": [
+      {
+        "field": "therapeutic_level",
+        "op": "is",
+        "value": true,
+        "text": "Therapeutic anticonvulsant drug level with known seizure history"
+      },
+      {
+        "field": "pattern_change",
+        "op": "is",
+        "value": true,
+        "text": "Change in seizure pattern"
+      },
+      {
+        "field": "multiple",
+        "op": "is",
+        "value": true,
+        "text": "Multiple episodes over 24 hours"
+      },
+      {
+        "field": "sodium",
+        "op": "<",
+        "value": 120,
+        "text": "Sodium {value} mmol/L is below 120"
+      },
+      {
+        "field": "mapping",
+        "op": "is",
+        "value": true,
+        "text": "Surgical mapping"
+      }
+    ]
+  },
+  "observation": {
+    "any": [
+      {
+        "field": "postictal",
+        "op": "is",
+        "value": true,
+        "text": "Prolonged postictal state (over 10 minutes) in a known seizure disorder"
+      }
+    ]
+  },
+  "observationText": "No inpatient criteria met. The guide lists seizures, or a prolonged postictal state in a known seizure disorder, as likely observation."
+}

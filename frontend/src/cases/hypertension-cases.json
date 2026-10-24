@@ -1,0 +1,102 @@
+[
+  {
+    "name": "Nothing entered -> Needs review",
+    "inputs": {},
+    "expect": {
+      "status": "review",
+      "reasonIncludes": "Enter the patient"
+    }
+  },
+  {
+    "name": "3 doses of IV medication -> inpatient",
+    "inputs": {
+      "iv_doses": 3
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "iv_doses"
+      ]
+    }
+  },
+  {
+    "name": "2 doses is not more than 2 -> observation",
+    "inputs": {
+      "iv_doses": 2
+    },
+    "expect": {
+      "status": "observation",
+      "notMet": [
+        "iv_doses"
+      ]
+    }
+  },
+  {
+    "name": "0 doses -> observation",
+    "inputs": {
+      "iv_doses": 0
+    },
+    "expect": {
+      "status": "observation",
+      "notMet": [
+        "iv_doses"
+      ]
+    }
+  },
+  {
+    "name": "Heart failure symptoms -> inpatient",
+    "inputs": {
+      "hf_symptoms": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "hf_symptoms"
+      ]
+    }
+  },
+  {
+    "name": "Hypertensive encephalopathy symptoms -> inpatient",
+    "inputs": {
+      "encephalopathy": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "encephalopathy"
+      ]
+    }
+  },
+  {
+    "name": "Both symptoms and 4 doses are all listed",
+    "inputs": {
+      "hf_symptoms": true,
+      "encephalopathy": true,
+      "iv_doses": 4
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "hf_symptoms",
+        "encephalopathy",
+        "iv_doses"
+      ]
+    }
+  },
+  {
+    "name": "Medicare, encephalopathy, 2+ midnights -> inpatient",
+    "payer": "medicare",
+    "medicare": {
+      "midnights": true
+    },
+    "inputs": {
+      "encephalopathy": true
+    },
+    "expect": {
+      "status": "inpatient",
+      "matched": [
+        "encephalopathy"
+      ]
+    }
+  }
+]
