@@ -11,9 +11,9 @@ const loaded = Object.values(modules).map((m) => m.default ?? m)
 
 // A contributor's typo should never crash the app: skip the bad file and say why.
 export const rules = loaded
-    .filter((rule) => {
-        const problems = validateRule(rule)
-        if (problems.length) console.error('Skipping rule file:', problems)
-        return problems.length === 0
-    })
-    .sort((a, b) => a.label.localeCompare(b.label))
+  .filter((rule) => {
+    const problems = validateRule(rule)
+    if (problems.length) console.error('Skipping rule file:', problems)
+    return problems.length === 0
+  })
+  .sort((a, b) => a.label.localeCompare(b.label))

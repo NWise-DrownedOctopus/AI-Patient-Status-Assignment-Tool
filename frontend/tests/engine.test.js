@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 import { evaluate, validateRule } from '../src/engine.js';
 import { applyPayer, linkedExclusions, MEDICARE_EXCLUSIONS } from '../src/medicare.js';
+import { buildNote, INPATIENT_PHRASE, OBSERVATION_PHRASE } from '../src/note.js';
 
 const rulesDir = new URL('../src/rules/', import.meta.url);
 const load = (url) => JSON.parse(readFileSync(url, 'utf8'));
@@ -577,5 +578,100 @@ describe('guide wording', () => {
       const text = JSON.stringify(rule);
       for (const re of banned) assert.doesNotMatch(text, re, `${rule.id} matches ${re}`);
     }
+  });
+});
+
+// ------------------------------------------------------------------ chart note
+
+describe('chart note', () => {
+  // Wording the guide says causes problems with payers.
+  const BANNED = [
+    /admit(ted|ting)?\b[^.\n]*\bto observation/i, // "admit to observation", "admit the patient to observation"
+    /\bobserv(e|ed|es|ing)\b/i,                      // observe / observed / observing used as a verb
+    /observe\s+overnight/i,
+  ];
+  const assertClean = (note, label) => {
+    for (const re of BANNED) assert.doesNotMatch(note, re, `${label}: matched ${re}`);
+  };
+
+  test('inpatient note uses the required wording and lists the reason', () => {
+    const note = buildNote(run({ inputs: { stable: true, o2sat: 88 } }), dyspnea);
+    assert.match(note, new RegExp(`^Level of care: ${INPATIENT_PHRASE} dyspnea\\.`));
+    assert.match(note, /O2 saturation 88% is below 90%/);
+    assert.match(note, /physician judgment/);
+  });
+
+  test('observation note says "place the patient in observation" and shows what was checked', () => {
+    const note = buildNote(run({ inputs: { stable: true, o2sat: 94 } }), dyspnea);
+    assert.match(note, new RegExp(`^Level of care: ${OBSERVATION_PHRASE} dyspnea\\.`));
+    assert.match(note, /O2 saturation 94%: not met \(needs below 90%\)/);
+    assert.doesNotMatch(note, new RegExp(INPATIENT_PHRASE));
+  });
+
+  test('Medicare lines appear in an inpatient note', () => {
+    const r = run({ payer: 'medicare', medicare: { midnights: true }, inputs: { stable: true, o2sat: 88 } });
+    assert.match(buildNote(r, dyspnea), /Medicare: 2 or more midnights/);
+    const ex = run({ payer: 'medicare', medicare: { left_ama: true }, inputs: { stable: true, o2sat: 88 } });
+    assert.match(buildNote(ex, dyspnea), /Medicare exclusion: Left against medical advice \(AMA\)/);
+  });
+
+  test('Needs review has no note', () => {
+    assert.equal(buildNote(evaluate(dyspnea, { stable: true }), dyspnea), null);
+    assert.equal(buildNote(null, dyspnea), null);
+  });
+
+  test('observation findings and conditions with a note name read naturally', () => {
+    const neuro = rulesById.neurologic_deficit;
+    const note = buildNote(evaluate(neuro, { weakness: true }), neuro);
+    assert.match(note, /Findings consistent with observation:\n- Muscle weakness/);
+    const hr = rulesById.high_risk;
+    assert.match(buildNote(evaluate(hr, { high_risk: true }), hr), /monitoring and\/or treatment of a high-risk condition\./);
+  });
+
+  test('no note ever contains banned wording: every case in every condition', () => {
+    let checked = 0;
+    for (const file of caseFiles) {
+      const rule = rulesById[file.replace(/-cases\.json$/, '')];
+      for (const c of load(new URL(file, casesDir))) {
+        const note = buildNote(run(c, rule), rule);
+        if (note === null) continue;
+        assertClean(note, `${rule.id}: ${c.name}`);
+        const r = run(c, rule);
+        assert.match(note, new RegExp(r.status === 'inpatient' ? INPATIENT_PHRASE : OBSERVATION_PHRASE));
+        checked++;
+      }
+    }
+    assert.ok(checked > 100, `only ${checked} notes were checked`);
+  });
+
+  test('no note ever contains banned wording: random patients for every condition', () => {
+    // Small deterministic generator so a failure is reproducible.
+    let seed = 12345;
+    const rand = () => ((seed = (seed * 1664525 + 1013904223) % 4294967296) / 4294967296);
+    let notes = 0;
+    for (const rule of Object.values(rulesById)) {
+      for (let i = 0; i < 300; i++) {
+        const inputs = {};
+        for (const f of rule.inputs) {
+          if (rand() < 0.45) continue; // leave blank
+          inputs[f.id] = f.type === 'toggle' ? rand() < 0.5 : Math.round((f.min + rand() * (f.max - f.min)) / f.step) * f.step;
+        }
+        const payer = ['medicare', 'other', null][Math.floor(rand() * 3)];
+        const medicare = rand() < 0.5 ? { midnights: rand() < 0.5 } : {};
+        const result = applyPayer(evaluate(rule, inputs), { payer, medicare, rule, inputs });
+        const note = buildNote(result, rule);
+        if (note === null) continue;
+        assertClean(note, `${rule.id} ${JSON.stringify(inputs)}`);
+        notes++;
+      }
+    }
+    assert.ok(notes > 1000, `only ${notes} notes were checked`);
+  });
+
+  test('the checker itself catches banned wording', () => {
+    for (const bad of ['Admit to observation for chest pain', 'admit the patient to observation', 'We will observe overnight', 'Observing the patient']) {
+      assert.ok(BANNED.some((re) => re.test(bad)), bad);
+    }
+    assert.ok(!BANNED.some((re) => re.test('Place the patient in observation for pain. Admit to inpatient for monitoring.')));
   });
 });

@@ -2,6 +2,7 @@
   "id": "high_risk",
   "label": "High-risk (other)",
   "source": "Guide for Physicians on Level of Care: High-risk condition",
+  "noteName": "a high-risk condition",
   "inputs": [
     {
       "id": "high_risk",

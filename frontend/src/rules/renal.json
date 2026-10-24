@@ -2,6 +2,7 @@
   "id": "renal",
   "label": "Renal",
   "source": "Guide for Physicians on Level of Care: Renal",
+  "noteName": "a renal condition",
   "inputs": [
     {
       "id": "cr_rise",

@@ -2,6 +2,7 @@
   "id": "psychiatric",
   "label": "Psychiatric",
   "source": "Guide for Physicians on Level of Care: Psychiatric",
+  "noteName": "a psychiatric condition",
   "inputs": [
     {
       "id": "si",

@@ -2,12 +2,15 @@
 import { computed, reactive, ref, watch } from 'vue'
 import { evaluate } from './engine.js'
 import { applyPayer, linkedExclusions } from './medicare.js'
+import { buildNote } from './note.js'
 import { rules } from './rules.js'
 import SegmentedControl from './components/SegmentedControl.vue'
 import ConditionPicker from './components/ConditionPicker.vue'
 import ConditionForm from './components/ConditionForm.vue'
 import MedicareSection from './components/MedicareSection.vue'
 import ResultBar from './components/ResultBar.vue'
+import NoteCard from './components/NoteCard.vue'
+import NoticeBar from './components/NoticeBar.vue'
 
 // Everything the physician has chosen lives here.
 const payer = ref(null) // 'medicare' | 'other' | null
@@ -39,6 +42,9 @@ const result = computed(() =>
     : null,
 )
 
+// The chart note exists only once there is an Inpatient or Observation recommendation.
+const note = computed(() => buildNote(result.value, selected.value))
+
 // Switching condition starts a fresh form. The Medicare answers stay: they describe the
 // patient's stay, not the condition.
 watch(selectedId, () => {
@@ -56,6 +62,7 @@ const setMedicare = (id, value) => setValue(medicare, id, value)
 
 <template>
   <div class="app">
+    <NoticeBar />
     <header class="app-header">
       <h1>Level of Care</h1>
       <p>Inpatient vs. observation, based on the hospital guide</p>
@@ -81,6 +88,8 @@ const setMedicare = (id, value) => setValue(medicare, id, value)
         <h2 class="section-title">Medicare</h2>
         <MedicareSection :medicare="medicare" :linked="linked" @update="setMedicare" />
       </section>
+
+      <NoteCard v-if="note" :note="note" />
     </main>
 
     <ResultBar :result="result" />

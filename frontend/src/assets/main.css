@@ -16,6 +16,10 @@
   --review: #b45309;
   --on-status: #ffffff;
 
+  --notice-bg: #fff4d6;
+  --notice-text: #5c3d00;
+  --notice-line: #e0a100;
+
   --radius: 14px;
   --tap: 48px; /* minimum touch target height */
 
@@ -34,6 +38,10 @@
     --accent-text: #0e141a;
 
     --inpatient: #4b5bd6;
+
+    --notice-bg: #2b2310;
+    --notice-text: #f1d999;
+    --notice-line: #b8860b;
   }
 }
 
@@ -47,6 +55,10 @@
 
 html {
   -webkit-text-size-adjust: 100%;
+  /* The notice bar (top) and result bar (bottom) are stuck to the screen. Scrolling to a
+     control, or tabbing to one, must stop short of them so it never ends up underneath. */
+  scroll-padding-top: 4.5rem;
+  scroll-padding-bottom: 6rem;
 }
 
 body {
@@ -77,6 +89,8 @@ summary,
   min-height: 100dvh;
   max-width: 560px;
   margin: 0 auto;
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
   display: flex;
   flex-direction: column;
 }
@@ -350,7 +364,7 @@ summary,
 
 .clear-btn {
   flex: none;
-  width: 40px;
+  width: 44px;
   height: var(--tap);
   border: 0;
   background: none;
@@ -479,4 +493,53 @@ input:focus-visible {
   font-size: 0.85rem;
   font-style: italic;
   opacity: 0.9;
+}
+
+/* ---------- chart note ---------- */
+
+.note-text {
+  margin: 0 0 12px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg);
+  font: inherit;
+  font-size: 0.92rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  user-select: text;
+}
+
+.copy-btn {
+  width: 100%;
+  min-height: var(--tap);
+  border: 0;
+  border-radius: 12px;
+  background: var(--accent);
+  color: var(--accent-text);
+  font-weight: 700;
+}
+
+.copy-btn.done {
+  background: var(--observation);
+  color: var(--on-status);
+}
+
+/* ---------- notices (stuck to the top, on every screen) ---------- */
+
+.notice {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: 6px 16px;
+  padding-top: max(6px, env(safe-area-inset-top));
+  background: var(--notice-bg);
+  color: var(--notice-text);
+  border-bottom: 2px solid var(--notice-line);
+  font-size: 0.78rem;
+  line-height: 1.3;
+}
+
+.notice p {
+  margin: 0;
 }
