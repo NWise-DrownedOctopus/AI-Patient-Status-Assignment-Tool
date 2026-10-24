@@ -2,6 +2,11 @@
     "id": "dyspnea",
     "label": "Dyspnea",
     "source": "Guide for Physicians on Level of Care: Dyspnea",
+    "medicare": {
+        "exclusions": {
+            "ventilation": "ventilation"
+        }
+    },
     "inputs": [
         {
             "id": "stable",

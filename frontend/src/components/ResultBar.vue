@@ -54,6 +54,13 @@ const canExpand = computed(() => props.result !== null)
         </ul>
       </template>
 
+      <template v-if="result.medicare && result.medicare.lines.length">
+        <h3>Medicare requirement met</h3>
+        <ul>
+          <li v-for="line in result.medicare.lines" :key="line">{{ line }}</li>
+        </ul>
+      </template>
+
       <template v-if="result.missing.length">
         <h3>Still needed</h3>
         <ul>

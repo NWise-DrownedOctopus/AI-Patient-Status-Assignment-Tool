@@ -67,7 +67,9 @@ input {
     color: inherit;
 }
 
-button {
+button,
+summary,
+.switch-row {
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
 }
@@ -247,6 +249,68 @@ button {
 
 .switch-row input:checked::after {
     transform: translateX(22px);
+}
+
+.hint {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-weight: 400;
+}
+
+/* ---------- Medicare card ---------- */
+
+.switch-label {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.switch-row input:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.exclusions {
+    margin-top: 6px;
+    border-top: 1px solid var(--border);
+}
+
+.exclusions summary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: var(--tap);
+    font-weight: 600;
+    list-style: none;
+    cursor: pointer;
+}
+
+.exclusions summary::-webkit-details-marker {
+    display: none;
+}
+
+.exclusions summary::after {
+    content: '▾';
+    color: var(--muted);
+    transition: transform 0.15s;
+}
+
+.exclusions[open] summary::after {
+    transform: rotate(180deg);
+}
+
+.summary-label {
+    flex: 1;
+}
+
+.count {
+    padding: 2px 10px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: var(--accent-text);
+    font-size: 0.8rem;
+    font-weight: 700;
 }
 
 /* ---------- number stepper ---------- */

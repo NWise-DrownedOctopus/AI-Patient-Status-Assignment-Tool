@@ -3,14 +3,22 @@ import { describe, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 import { evaluate, validateRule } from '../src/engine.js';
+import { applyPayer, linkedExclusions, MEDICARE_EXCLUSIONS } from '../src/medicare.js';
 
 const rulesDir = new URL('../src/rules/', import.meta.url);
 const load = (url) => JSON.parse(readFileSync(url, 'utf8'));
 
 const dyspnea = load(new URL('dyspnea.json', rulesDir));
-const dyspneaCases = load(new URL('../cases/dyspnea.json', rulesDir));
+const dyspneaCases = load(new URL('../cases/dyspnea-cases.json', rulesDir));
 
 const sorted = (list) => [...list].sort();
+
+// A case with a "payer" key also goes through the Medicare layer; without one, clinical only.
+function run(c, rule = dyspnea) {
+    const clinical = evaluate(rule, c.inputs);
+    if (!('payer' in c)) return clinical;
+    return applyPayer(clinical, { payer: c.payer, medicare: c.medicare ?? {}, rule, inputs: c.inputs });
+}
 
 // ------------------------------------------------------------------ rule files
 
@@ -42,10 +50,10 @@ describe('rule files', () => {
 
 // ------------------------------------------------------------------ dyspnea cases
 
-describe('dyspnea cases (src/cases/dyspnea.json)', () => {
+describe('dyspnea cases (src/cases/dyspnea-cases.json)', () => {
     for (const c of dyspneaCases) {
         test(c.name, () => {
-            const result = evaluate(dyspnea, c.inputs);
+            const result = run(c);
             assert.equal(result.status, c.expect.status);
             if (c.expect.matched) {
                 assert.deepEqual(sorted(result.matched.map((m) => m.field)), sorted(c.expect.matched));
@@ -100,6 +108,110 @@ describe('dyspnea cases (src/cases/dyspnea.json)', () => {
     test('a met criterion wins even if the sat is blank', () => {
         const r = evaluate(dyspnea, { stable: true, ventilation: true });
         assert.equal(r.status, 'inpatient');
+    });
+});
+
+// ------------------------------------------------------------------ Medicare layer
+
+describe('Medicare layer', () => {
+    const sat88 = { stable: true, o2sat: 88 };
+    const apply = (inputs, payer, medicare = {}, rule = dyspnea) =>
+        applyPayer(evaluate(rule, inputs), { payer, medicare, rule, inputs });
+
+    test('there are exactly five exclusions', () => {
+        assert.deepEqual(
+            MEDICARE_EXCLUSIONS.map((e) => e.id),
+            ['transfer', 'expired', 'left_ama', 'ventilation', 'improved_faster'],
+        );
+    });
+
+    test('every exclusion alone satisfies Medicare for an inpatient result', () => {
+        for (const { id, label } of MEDICARE_EXCLUSIONS) {
+            const r = apply(sat88, 'medicare', { midnights: false, [id]: true });
+            assert.equal(r.status, 'inpatient', id);
+            assert.deepEqual(r.medicare.lines, [`Medicare exclusion: ${label}`]);
+        }
+    });
+
+    test('2+ midnights satisfies Medicare and says so', () => {
+        const r = apply(sat88, 'medicare', { midnights: true });
+        assert.equal(r.status, 'inpatient');
+        assert.deepEqual(r.medicare.lines, ['Medicare: 2 or more midnights of hospital care expected']);
+    });
+
+    test('midnights and an exclusion together are both listed', () => {
+        const r = apply(sat88, 'medicare', { midnights: true, transfer: true });
+        assert.equal(r.medicare.lines.length, 2);
+    });
+
+    test('unanswered midnights asks for the answer and keeps the clinical criteria visible', () => {
+        const r = apply(sat88, 'medicare');
+        assert.equal(r.status, 'review');
+        assert.deepEqual(r.missing, [{ field: 'midnights', label: 'Expected 2+ midnights (Medicare)' }]);
+        assert.deepEqual(r.matched.map((m) => m.field), ['o2sat']);
+        assert.match(r.reasons[0], /Expected 2\+ midnights/);
+    });
+
+    test('"No" to midnights with no exclusion is Needs review, never a silent downgrade', () => {
+        const r = apply(sat88, 'medicare', { midnights: false });
+        assert.equal(r.status, 'review');
+        assert.deepEqual(r.missing, []);
+        assert.match(r.reasons[0], /fewer than 2 midnights/);
+    });
+
+    test('the ventilation finding counts as the ventilation exclusion without asking twice', () => {
+        const inputs = { stable: true, o2sat: 96, ventilation: true };
+        assert.deepEqual(linkedExclusions(dyspnea, inputs), ['ventilation']);
+        const r = apply(inputs, 'medicare');
+        assert.equal(r.status, 'inpatient');
+        assert.deepEqual(r.medicare.lines, ['Medicare exclusion: Requires ventilation']);
+    });
+
+    test('a condition with no linked exclusions links nothing', () => {
+        assert.deepEqual(linkedExclusions({ id: 'x', inputs: [] }, { ventilation: true }), []);
+    });
+
+    test('other payer: inpatient straight away, no Medicare lines', () => {
+        const r = apply(sat88, 'other');
+        assert.equal(r.status, 'inpatient');
+        assert.equal(r.medicare, null);
+    });
+
+    test('payer not chosen: an inpatient result needs the payer, observation does not', () => {
+        const r = apply(sat88, null);
+        assert.equal(r.status, 'review');
+        assert.deepEqual(r.missing, [{ field: 'payer', label: 'Payer' }]);
+        assert.equal(apply({ stable: true, o2sat: 94 }, null).status, 'observation');
+    });
+
+    test('Medicare never changes an observation or a review result', () => {
+        assert.equal(apply({ stable: true, o2sat: 94 }, 'medicare').status, 'observation');
+        const review = apply({ stable: true }, 'medicare');
+        assert.equal(review.status, 'review');
+        assert.deepEqual(review.missing.map((m) => m.field), ['o2sat']);
+    });
+
+    test('the clinical result is not mutated', () => {
+        const clinical = evaluate(dyspnea, sat88);
+        const before = JSON.stringify(clinical);
+        applyPayer(clinical, { payer: 'medicare', medicare: {}, rule: dyspnea, inputs: sat88 });
+        assert.equal(JSON.stringify(clinical), before);
+    });
+
+    test('the validator checks the medicare mapping in a rule file', () => {
+        const base = {
+            id: 'm',
+            label: 'M',
+            inputs: [
+                { id: 'a', label: 'A', type: 'toggle' },
+                { id: 'n', label: 'N', type: 'number' },
+            ],
+            inpatient: { any: [{ field: 'a', op: 'is', value: true }] },
+        };
+        assert.deepEqual(validateRule({ ...base, medicare: { exclusions: { ventilation: 'a' } } }), []);
+        assert.equal(validateRule({ ...base, medicare: { exclusions: { bogus: 'a' } } }).length, 1);
+        assert.equal(validateRule({ ...base, medicare: { exclusions: { ventilation: 'zzz' } } }).length, 1);
+        assert.equal(validateRule({ ...base, medicare: { exclusions: { ventilation: 'n' } } }).length, 1);
     });
 });
 

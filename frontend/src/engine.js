@@ -12,6 +12,8 @@
 //   observation - the inpatient criteria group is false
 //   review      - a prerequisite failed, or required answers are missing
 
+import { MEDICARE_EXCLUSIONS } from './medicare.js';
+
 const COMPARE_OPS = ['<', '<=', '>', '>=', '==', '!=', 'is', 'between'];
 const NUMERIC_OPS = ['<', '<=', '>', '>=', 'between'];
 const INPUT_TYPES = ['toggle', 'number'];
@@ -268,6 +270,17 @@ export function validateRule(rule) {
         ids.add(i.id);
         if (!INPUT_TYPES.includes(i.type)) err(`input "${i.id}" has unknown type "${i.type}"`);
         if (!i.label) err(`input "${i.id}" has no "label"`);
+    }
+
+    // Optional: "medicare": { "exclusions": { "<exclusion id>": "<input id>" } }
+    const exclusionMap = rule.medicare?.exclusions ?? {};
+    for (const [exclusionId, inputId] of Object.entries(exclusionMap)) {
+        if (!MEDICARE_EXCLUSIONS.some((e) => e.id === exclusionId)) {
+            err(`medicare.exclusions: unknown exclusion "${exclusionId}"`);
+        }
+        const input = rule.inputs.find((i) => i.id === inputId);
+        if (!input) err(`medicare.exclusions: unknown input "${inputId}"`);
+        else if (input.type !== 'toggle') err(`medicare.exclusions: input "${inputId}" must be a toggle`);
     }
 
     const checkLeaf = (leaf, where) => {
