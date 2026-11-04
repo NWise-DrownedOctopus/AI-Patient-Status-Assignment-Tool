@@ -444,14 +444,19 @@ input:focus-visible {
 
 .summary {
   flex: 1;
+  min-width: 0;
   font-size: 0.95rem;
   line-height: 1.3;
-  /* Long explanations stay readable in the expanded panel; the collapsed bar stays short. */
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  overflow: hidden;
+
+  /* Allow text to wrap */
+  white-space: normal;
+  overflow-wrap: anywhere;
+
+  /* Grow up to approximately 5 lines */
+  max-height: 6.5em;
+
+  /* Scroll when text exceeds the maximum height */
+  overflow-y: auto;
 }
 
 .chevron {
@@ -542,4 +547,63 @@ input:focus-visible {
 
 .notice p {
   margin: 0;
+}
+
+
+/* ---------- AI image import ---------- */
+
+.image-import {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.image-import h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.image-import input[type="file"] {
+  width: 100%;
+  max-width: 100%;
+}
+
+.image-import button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.extraction-review {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.extraction-review p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.extraction-review select,
+.extraction-review input[type="number"] {
+  width: 100%;
+  min-height: var(--tap);
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--text);
+}
+
+.extraction-review select:focus-visible,
+.extraction-review input:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
 }

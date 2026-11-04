@@ -11,6 +11,7 @@ import MedicareSection from './components/MedicareSection.vue'
 import ResultBar from './components/ResultBar.vue'
 import NoteCard from './components/NoteCard.vue'
 import NoticeBar from './components/NoticeBar.vue'
+import ImageImport from './components/ImageImport.vue'
 
 // Everything the physician has chosen lives here.
 const payer = ref(null) // 'medicare' | 'other' | null
@@ -58,6 +59,28 @@ function setValue(target, id, value) {
 }
 const setInput = (id, value) => setValue(inputs, id, value)
 const setMedicare = (id, value) => setValue(medicare, id, value)
+
+function applyExtractedFindings({ ruleId, values }) {
+  if (!selected.value || selected.value.id !== ruleId) {
+    return
+  }
+
+  for (const field of selected.value.inputs) {
+    const value = values[field.id]
+
+    // Preserve existing entries for unknown findings.
+    if (value === null || value === undefined) continue
+
+    // False toggles correspond to unchecked findings.
+    setInput(
+      field.id,
+      field.type === 'toggle' && value === false
+        ? undefined
+        : value
+    )
+  }
+}
+
 </script>
 
 <template>
@@ -79,10 +102,24 @@ const setMedicare = (id, value) => setValue(medicare, id, value)
         <ConditionPicker v-model="selectedId" :rules="rules" />
       </section>
 
-      <section v-if="selected" class="card">
-        <h2 class="section-title">Findings</h2>
-        <ConditionForm :key="selected.id" :rule="selected" :inputs="inputs" @update="setInput" />
-      </section>
+      
+<section v-if="selected" class="card">
+  <h2 class="section-title">Findings</h2>
+
+  <ImageImport
+    :key="selected.id"
+    :rule="selected"
+    @apply="applyExtractedFindings"
+  />
+
+  <ConditionForm
+    :key="selected.id"
+    :rule="selected"
+    :inputs="inputs"
+    @update="setInput"
+  />
+</section>
+
 
       <section v-if="selected && payer === 'medicare'" class="card">
         <h2 class="section-title">Medicare</h2>
