@@ -1,4 +1,4 @@
-const MODEL = 'llama3.2-vision'
+const MODEL = 'qwen2.5vl:3b'
 const ENDPOINT = '/ollama/api/chat'
 
 function toBase64(file) {
