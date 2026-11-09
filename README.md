@@ -34,7 +34,7 @@ Open the local URL printed by Vite (typically `http://localhost:5173`). The rule
 
 ## Optional AI image extraction
 
-The AI feature uses **Ollama** with the **Llama 3.2 Vision** model to transcribe findings from images of synthetic medical documents. Ollama is a separate local service; it is **not** required to use the rules engine.
+The AI feature uses **Ollama** with the **Qwen2.5-VL 3B** model to transcribe findings from images of synthetic medical documents. Ollama is a separate local service; it is **not** required to use the rules engine.
 
 ### One-time setup
 
@@ -45,10 +45,10 @@ The AI feature uses **Ollama** with the **Llama 3.2 Vision** model to transcribe
    ollama --version
    ```
 
-3. Download the model (approximately 7.8 GB; requires sufficient disk space and memory to run):
+3. Download the model (approximately 3.2 GB; requires sufficient disk space and memory to run):
 
    ```bash
-   ollama pull llama3.2-vision
+   ollama pull qwen2.5vl:3b
    ```
 
 4. Ensure the Ollama application/service is running. If it is not already running, start Ollama or use `ollama serve` as appropriate for your installation.
@@ -66,7 +66,8 @@ The AI feature uses **Ollama** with the **Llama 3.2 Vision** model to transcribe
 ### Troubleshooting
 
 - **`ollama` command not recognized:** Install Ollama, then close and reopen the terminal. Verify with `ollama --version`.
-- **Model unavailable:** Check `ollama list` and, if necessary, run `ollama pull llama3.2-vision`.
+- **Model unavailable:** Check `ollama list` and, if necessary, run `ollama pull qwen2.5vl:3b`.
+- **Model loading fails with HTTP 500:** Test the model independently using `ollama run qwen2.5vl:3b`. Some Ollama releases may have compatibility issues with particular model architectures. Check the Ollama server logs before changing application code.
 - **Connection error:** Ensure Ollama is running and check `http://127.0.0.1:11434/api/tags`. Restart the Vite development server after changing its proxy configuration.
 - **AI import fails on the public website:** The Vite development proxy works locally only; the Vercel deployment does not currently host an inference service.
 
