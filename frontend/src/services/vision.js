@@ -1,21 +1,65 @@
 
-function toBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader()
+
+async function toBase64(file) {
+  const MAX_BASE64_LENGTH = 2_700_000;
+
+  // Read the original image first.
+  const original = await new Promise((resolve, reject) => {
+    const reader = new FileReader();
 
     reader.onload = () => {
       if (typeof reader.result !== 'string') {
-        reject(new Error('Could not read the image.'))
-        return
+        reject(new Error('Could not read the image.'));
+        return;
       }
 
-      resolve(reader.result.split(',')[1])
+      resolve(reader.result.split(',')[1]);
+    };
+
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(file);
+  });
+
+  // Preserve images already within the limit.
+  if (original.length <= MAX_BASE64_LENGTH) {
+    return original;
+  }
+
+  // Compress oversized images without initially resizing them.
+  const bitmap = await createImageBitmap(file);
+
+  try {
+    const canvas = document.createElement('canvas');
+    canvas.width = bitmap.width;
+    canvas.height = bitmap.height;
+
+    const ctx = canvas.getContext('2d');
+
+    if (!ctx) {
+      throw new Error('Could not process the image.');
     }
 
-    reader.onerror = () => reject(reader.error)
-    reader.readAsDataURL(file)
-  })
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(bitmap, 0, 0);
+
+    for (const quality of [0.85, 0.7, 0.55]) {
+      const dataUrl = canvas.toDataURL('image/jpeg', quality);
+      const base64 = dataUrl.split(',')[1];
+
+      if (base64.length <= MAX_BASE64_LENGTH) {
+        return base64;
+      }
+    }
+
+    throw new Error(
+      'Image is too large even after compression.'
+    );
+  } finally {
+    bitmap.close();
+  }
 }
+
 
 export async function extractPatientFields(file, rule) {
   if (!file?.type.startsWith('image/')) {
@@ -50,13 +94,6 @@ export async function extractPatientFields(file, rule) {
     type: field.type,
     unit: field.unit ?? null
   }))
-
-  
-alert(
-  'Image type: ' + typeof image +
-  '\nImage length: ' + image?.length +
-  '\nImage prefix: ' + image?.substring(0, 30)
-);
 
 const response = await fetch('/api/extract', {
   method: 'POST',
