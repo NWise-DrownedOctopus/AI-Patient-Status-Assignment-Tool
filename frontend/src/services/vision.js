@@ -1,5 +1,3 @@
-const MODEL = 'qwen2.5vl:3b'
-const ENDPOINT = '/ollama/api/chat'
 
 function toBase64(file) {
   return new Promise((resolve, reject) => {
@@ -53,17 +51,14 @@ export async function extractPatientFields(file, rule) {
     unit: field.unit ?? null
   }))
 
-  const response = await fetch(ENDPOINT, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      model: MODEL,
-      stream: false,
-      format: schema,
-      options: { temperature: 0 },
-      messages: [{
-        role: 'user',
-        content: `
+  
+const response = await fetch('/api/extract', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    image,
+    schema,
+    prompt: `
 Transcribe the medical findings in this image.
 
 Extract ONLY these fields:
@@ -77,15 +72,23 @@ Rules:
 - Null means missing, unclear, or unreadable.
 - Convert numerical units only when unambiguous.
 - Return no information outside the JSON schema.
-`,
-        images: [image]
-      }]
-    })
+`
   })
+})
 
-  if (!response.ok) {
-    throw new Error(`Ollama request failed (${response.status}).`)
-  }
+
+if (!response.ok) {
+  const errorBody = await response.text();
+
+  console.error('Ollama error response:', {
+    status: response.status,
+    body: errorBody
+  });
+
+  throw new Error(
+    `Ollama request failed (${response.status}): ${errorBody}`
+  );
+}
 
   const data = await response.json()
   const raw = JSON.parse(data.message.content)
