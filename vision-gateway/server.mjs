@@ -94,6 +94,20 @@ const server = http.createServer(async (req, res) => {
 
     const { image, prompt, schema } = payload;
 
+    console.log('Incoming extraction request:', {
+  imageType: typeof image,
+  imageLength: typeof image === 'string' ? image.length : null,
+  imagePrefix: typeof image === 'string'
+    ? image.substring(0, 30)
+    : null,
+  promptType: typeof prompt,
+  promptLength: typeof prompt === 'string'
+    ? prompt.length
+    : null,
+  schemaType: typeof schema
+});
+
+
     if (
       typeof image !== 'string' ||
       !/^[A-Za-z0-9+/]+={0,2}$/.test(image) ||
