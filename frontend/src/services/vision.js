@@ -52,6 +52,12 @@ export async function extractPatientFields(file, rule) {
   }))
 
   
+alert(
+  'Image type: ' + typeof image +
+  '\nImage length: ' + image?.length +
+  '\nImage prefix: ' + image?.substring(0, 30)
+);
+
 const response = await fetch('/api/extract', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
